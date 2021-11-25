@@ -1,4 +1,4 @@
--- These are the queries I sent him when he asked for more complex queries. 
+-- This view may prove useful or not based on whether or not it becomes cumbersome with Flask.
 DROP VIEW IF EXISTS posts_from_user;
 CREATE VIEW IF NOT EXISTS posts_from_user AS
 SELECT *
@@ -51,3 +51,12 @@ FROM posts,
     likes
 WHERE likes.pid = posts.pid
     AND likes.username = "nathan";
+-- Which users liked "tony"'s post with PID 3?
+SELECT likes.username
+FROM posts,
+    likes
+WHERE likes.pid = posts.pid
+    AND posts.pid = "3";
+-- It seems as though our project might be more about hooking up the front-end and back-end to work properly
+-- more than writing super complex queries. However, if one wants to perform an advanced search that might
+-- call for more intellectually challenging queries.
