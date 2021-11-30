@@ -8,3 +8,6 @@
 --       data in the data creation process, it does not necessarily need to be meaningful,
 --       but you should have a good amount of them to demo in phase 3, so that your application
 --       works like an application that returns or processes over a good amount of data."
+
+.mode csv
+.import csv/users.csv users

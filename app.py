@@ -15,7 +15,7 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return Users.query.get(int(user_id))
 
 # so the templates folder works or something
 bootstrap = Bootstrap(app)
@@ -47,14 +47,14 @@ def login():
         print('fuck')
         # I think these ifs can be combined but fck it
         # make sure user exists in user table
-        if (User.query.filter_by(username = form.username.data).first() is not None):
+        if (Users.query.filter_by(username = form.username.data).first() is not None):
             # if the user exists then check the password, this way only log in if user exists and password is correct
-            if(User.query.filter_by(username = form.username.data).first().password == form.password.data):
-                user = User.query.filter_by(username = form.username.data).first()
+            if(Users.query.filter_by(username = form.username.data).first().password == form.password.data):
+                user = Users.query.filter_by(username = form.username.data).first()
                 login_user(user)
                 # session['user'] = user
                 return redirect('/home')
-            print(User.query.filter_by(username = form.username.data).first().password)
+            print(Users.query.filter_by(username = form.username.data).first().password)
             print(form.password.data)
     return render_template('login.html', form = form)
 
@@ -89,7 +89,7 @@ def register():
 @app.route('/home')
 @login_required
 def home():
-    name = User.query.filter_by(id = current_user.id).first().firstname
+    name = Users.query.filter_by(id = current_user.id).first().firstname
     return render_template('home.html', name = name)
 
 

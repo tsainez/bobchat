@@ -3,17 +3,21 @@
 -- Run ONCE to create and refresh database from scratch.
 DROP TABLE IF EXISTS users;
 CREATE TABLE IF NOT EXISTS users(
+    id int(8) not null,
     username char(32) NOT NULL,
     PASSWORD char(32) NOT NULL,
+    firstname char(32) not null,
+    lastname char(32) not null,
     email char(32) NOT NULL,
-    did int(8),
-    PRIMARY KEY (username)
+    major char(32) not null,
+    PRIMARY KEY (id)
 );
 DROP TABLE IF EXISTS den;
 CREATE TABLE IF NOT EXISTS den(
     id int(8),
     name char(32) NOT NULL,
-    description char(256) NOT NULL
+    description char(256) NOT NULL,
+    primary key (id)
 );
 DROP TABLE IF EXISTS c_likes;
 CREATE TABLE IF NOT EXISTS c_likes(
