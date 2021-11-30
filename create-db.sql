@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS users(
     major char(32) not null,
     PRIMARY KEY (id)
 );
-DROP TABLE IF EXISTS den;
-CREATE TABLE IF NOT EXISTS den(
+DROP TABLE IF EXISTS dens;
+CREATE TABLE IF NOT EXISTS dens(
     id int(8),
     name char(32) NOT NULL,
     description char(256) NOT NULL,
