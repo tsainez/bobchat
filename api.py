@@ -14,4 +14,10 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True)
     username = db.Column(db.String(32), unique=True, nullable=False)
     password = db.Column(db.String(32), nullable=False)
+    firstname = db.Column(db.String(32), nullable=False)
+    lastname = db.Column(db.String(32), nullable=False)
+    email = db.Column(db.String(32), nullable=False)
+    major = db.Column(db.String(32), nullable=False)
+
+db.create_all()
 
