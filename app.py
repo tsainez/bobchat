@@ -71,7 +71,7 @@ def register():
     if (request.method == 'POST'):
         
         # only add to db if user does not exist
-        if (User.query.filter_by(username = form.username.data).first() is not None):
+        if (Users.query.filter_by(username = form.username.data).first() is not None):
             return '<a href=\'/register\'>username already exists, click here to try again.</a>'
         
         # next make sure passwords match
@@ -79,12 +79,13 @@ def register():
             return '<a href=\'/register\'>passwords did not match, click here to try again.</a>'
         
         # if username not already taken and passwords match then add to db
-        db.session.add(User(username = form.username.data, password = form.password.data))
+        db.session.add(Users(username = form.username.data, password = form.password.data))
         db.session.commit()
         return '<a href=\'/login\'>account created, click here to head to login</a>'
     
     # if the request method is not POST then serve the register page.
     return render_template('register.html', form = form)
+
 
 @app.route('/home')
 @login_required
