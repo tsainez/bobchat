@@ -44,7 +44,6 @@ def login():
     form = LoginForm()
     # if method is post then check was was posted, otherwise serve templates/login.html
     if (request.method == 'POST'):
-        print('fuck')
         # I think these ifs can be combined but fck it
         # make sure user exists in user table
         if (Users.query.filter_by(username = form.username.data).first() is not None):
@@ -90,10 +89,25 @@ def register():
 @app.route('/home')
 @login_required
 def home():
+    denList = ""
     name = Users.query.filter_by(id = current_user.id).first().firstname
-    return render_template('home.html', name = name)
+    for row in Users_And_Dens.query.filter_by(user_id = current_user.id).all():
+        denName = str(Dens.query.filter_by(id = row.den_id).first().name)
+        denUrl = denName.replace(' ', '%20')
+        denList += "<p><a href = '/{}'>{}</a></p>".format(denUrl, denName)
+    return render_template('home.html', name = name, dens = denList)
 
-
+@app.route('/<den>', methods=['GET','POST'])
+@login_required
+def den(den):
+    denName = den.replace('%20', ' ')
+    if Dens.query.filter_by(name = denName).first() is None:
+        return redirect('/home')
+    if request.method == 'POST':
+        print(request.form['toPost'])
+        print(current_user.firstname)
+        
+    return render_template('den.html', denName = denName, denUrl = den)
 
 if __name__ == '__main__':
     app.run()
