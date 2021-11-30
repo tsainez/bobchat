@@ -3,7 +3,7 @@
 -- Run ONCE to create and refresh database from scratch.
 DROP TABLE IF EXISTS users;
 CREATE TABLE IF NOT EXISTS users(
-    id int(8) not null,
+    id Integer not null,
     username char(32) NOT NULL,
     PASSWORD char(32) NOT NULL,
     firstname char(32) not null,
