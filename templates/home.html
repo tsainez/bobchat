@@ -6,15 +6,5 @@ Dashboard
 
 {% block content %}
     <a href='/logout'>Logout</a>
-    <h1>Welcome {{ name }}, to your {{ id }} portal.</h1>
-    <h2>Your courses:</h2>
-    <table border="1">
-        {{ grades|safe }}
-    </table>
-    {% if id == 'student' %}
-    <h2>All Courses:</h2>
-    <table border="1">
-        {{ total|safe }}
-    </table>
-    {% endif %}
+    <h1>Welcome {{ name }}, to BobChat.</h1>
 {% endblock %}

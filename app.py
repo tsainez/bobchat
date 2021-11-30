@@ -42,10 +42,9 @@ def index():
 @app.route('/login', methods = ['GET','POST'])
 def login():
     form = LoginForm()
-
     # if method is post then check was was posted, otherwise serve templates/login.html
     if (request.method == 'POST'):
-        
+        print('fuck')
         # I think these ifs can be combined but fck it
         # make sure user exists in user table
         if (User.query.filter_by(username = form.username.data).first() is not None):
@@ -55,11 +54,15 @@ def login():
                 login_user(user)
                 # session['user'] = user
                 return redirect('/home')
-        else:
-            # otherwise tell user to try again
-            return '<a href=\'/login\'>wrong username or password, click here to try again</a>'
-    
+            print(User.query.filter_by(username = form.username.data).first().password)
+            print(form.password.data)
     return render_template('login.html', form = form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect('/login')
 
 @app.route('/register', methods = ['GET', 'POST'])
 def register():
@@ -86,7 +89,9 @@ def register():
 @app.route('/home')
 @login_required
 def home():
-    return '<p>you are logged in</p>'
+    name = User.query.filter_by(id = current_user.id).first().firstname
+    return render_template('home.html', name = name)
+
 
 
 if __name__ == '__main__':
