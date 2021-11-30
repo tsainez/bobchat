@@ -1,4 +1,4 @@
-from api import *
+from db import *
 from flask_login import LoginManager, login_required, logout_user, current_user, login_user
 from flask_wtf import FlaskForm
 from flask.templating import render_template
@@ -26,9 +26,14 @@ class LoginForm(FlaskForm):
     password = PasswordField('password', validators=[InputRequired()])
 
 class RegisterForm(FlaskForm):
+    firstname = StringField('first name', validators=[InputRequired()])
+    lastname = StringField('last name',validators=[InputRequired()])
     username = StringField('username', validators=[InputRequired()])
     password = PasswordField('password', validators=[InputRequired()])
     confpass = PasswordField('confirm password', validators=[InputRequired()])
+    email = StringField('email', validators=[InputRequired()])
+    major = StringField('major', validators=[InputRequired()])
+
 
 @app.route('/')
 def index():
