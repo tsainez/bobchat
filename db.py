@@ -18,8 +18,3 @@ class User(UserMixin, db.Model):
     lastname = db.Column(db.String(32), nullable=False)
     email = db.Column(db.String(32), nullable=False)
     major = db.Column(db.String(32), nullable=False)
-
-db.create_all()
-
-db.engine.execute(".mode csv")
-# db.engine.execute(".import c:/sqlite/users.csv user")
