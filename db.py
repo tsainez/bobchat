@@ -21,3 +21,5 @@ class User(UserMixin, db.Model):
 
 db.create_all()
 
+db.engine.execute(".mode csv")
+# db.engine.execute(".import c:/sqlite/users.csv user")
