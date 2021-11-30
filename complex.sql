@@ -1,3 +1,9 @@
+-- complex.sql
+-- -- TODO:: According to our TA: 
+--      "The complex queries are prone to be a bit too simple. 
+--       Professor asks me to check if the commands involves 3 or more tables.
+--       I will not deduct any points right now. But you need to make sure your 
+--       queries are complex enough in the phase 3."
 -- This view may prove useful or not based on whether or not it becomes cumbersome with Flask.
 DROP VIEW IF EXISTS posts_from_user;
 CREATE VIEW IF NOT EXISTS posts_from_user AS
