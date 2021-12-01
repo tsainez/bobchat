@@ -54,7 +54,7 @@ def register():
                 # library will take care of escaping the values so you are not vulnerable
                 # to a SQL injection attack.
                 db.execute(
-                    "INSERT INTO user (username, password) VALUES (?, ?)",
+                    "INSERT INTO users (username, password) VALUES (?, ?)",
                     (username, generate_password_hash(password)),
                 )
                 # For security, passwords should never be stored in the database directly.
@@ -97,7 +97,7 @@ def login():
         # The user is queried first and stored in a variable for later use.
         # fetchone() returns one row from the query. If the query returned no results, it returns None.
         user = db.execute(
-            'SELECT * FROM user WHERE username = ?', (username,)
+            'SELECT * FROM users WHERE username = ?', (username,)
         ).fetchone()
 
         # check_password_hash() hashes the submitted password in the same way as the stored hash
@@ -135,7 +135,7 @@ def load_logged_in_user():
         g.user = None
     else:
         g.user = get_db().execute(
-            'SELECT * FROM user WHERE id = ?', (user_id,)
+            'SELECT * FROM users WHERE id = ?', (user_id,)
         ).fetchone()
 
 
