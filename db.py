@@ -85,6 +85,7 @@ del inspector
 # Might have something to do with sessions? https://stackoverflow.com/questions/70177674/refreshing-the-inspector-in-sqlalchemy
 
 # Checking if the tables are populated.
+print("Verifying data integrity...")
 with engine.connect() as connection:
     # Iterating through all the tables in the database...
     inspector = inspect(engine)
@@ -108,6 +109,8 @@ with engine.connect() as connection:
                     print(
                         "\tERROR: There is no CSV to populate '{}'!\n".format(table_name))
                     continue
-            print("\t'{}' filled.\n\t{} seconds elapsed.\n".format(
-                table_name, (time.time() - start_time)))
+                print("\t'{}' filled.\n\t{} seconds elapsed.\n".format(
+                    table_name, (time.time() - start_time)))
+            else:
+                print("\t'{}' table has data.\n".format(table_name))
     del inspector
