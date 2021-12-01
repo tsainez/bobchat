@@ -1,8 +1,13 @@
 import sqlite3
+from sqlite3 import Error
+from typing import Type
 
 import click
 from flask import current_app, g
 from flask.cli import with_appcontext
+
+import pandas as pd
+import os
 
 # g is a special object that is unique for each request.
 # It is used to store data that might be accessed by multiple
@@ -27,7 +32,7 @@ def get_db():
             detect_types=sqlite3.PARSE_DECLTYPES
         )
 
-        # tells the connection to return rows that behave like dicts. This allows accessing the columns by name.
+        # Tells the connection to return rows that behave like dicts. This allows accessing the columns by name.
         g.db.row_factory = sqlite3.Row
 
     return g.db
@@ -42,14 +47,47 @@ def close_db(e=None):
 
 
 # Running the SQL commands in 'schema.sql' to initialize the database.
+# This function also populates the tables with default data.
 def init_db():
+    print("Verifying database integrity...\n")
     db = get_db()
+
+    # Testing to see if any tables exist in the schema table
+    # See: https://www.sqlite.org/schematab.html
+    if db.cursor().execute("SELECT name FROM sqlite_master").fetchone() is not None:
+        print("\tWARNING: You already have a database initialized.")
+        print("\t         Are you certain you want to overwrite it?\n")
+        yn = input("\ty/n: ")
+        print()
+        if yn != "y":
+            return -1
 
     # Opens a file relative to the bobchat package,
     # which is useful since we won’t necessarily know
     # where that location is when deploying the application later.
     with current_app.open_resource('schema.sql') as f:
-        db.executescript(f.read().decode('utf8'))
+        try:
+            db.executescript(f.read().decode('utf8'))
+        except Error as e:
+            print("\tERROR: " + str(e) + "\n")
+            return -1
+
+    # Attempt to populate all the tables with default data.
+    for file_name in os.listdir('bobchat/csv'):
+        table_name = file_name[:-4]  # Removing '.csv' from the file_name
+
+        if pd.io.sql.has_table(table_name, db):
+            try:
+                df = pd.read_csv(
+                    'bobchat/csv/{}'.format(file_name), index_col=0)
+                df.to_sql('{}'.format(table_name), db, if_exists='append')
+                print("\tSUCCESS: filled table {}\n".format(table_name))
+            except Error as e:
+                print("\tERROR: " + str(e) + "\n")
+        else:
+            # We are not handling creating the schema here. We do that in schema.sql.
+            print(
+                "\tWARNING: table {} does not exist in the schema.\n".format(table_name))
 
 
 # Defines a command line command called init-db that calls the init_db function and shows a success message to the user
@@ -58,8 +96,10 @@ def init_db():
 @with_appcontext
 def init_db_command():
     """Clear the existing data and create new tables."""
-    init_db()
-    click.echo('Initialized the database.')
+    if init_db() == -1:
+        click.echo('Failed to initialize database.')
+    else:
+        click.echo('Database initialized.')
 
 
 # The close_db and init_db_command functions need to be registered with the application instance.
