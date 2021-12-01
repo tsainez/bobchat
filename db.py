@@ -40,12 +40,12 @@ engine = db.engine
 class Users(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    username = db.Column(db.String(100), unique=True, nullable=False)
-    password = db.Column(db.String(100), nullable=False)
-    firstname = db.Column(db.String(100), nullable=False)
-    lastname = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(100), nullable=False)
-    major = db.Column(db.String(100), nullable=False)
+    username = db.Column(db.String(32), unique=True, nullable=False)
+    password = db.Column(db.String(32), nullable=False)
+    firstname = db.Column(db.String(32), nullable=False)
+    lastname = db.Column(db.String(32), nullable=False)
+    email = db.Column(db.String(64), nullable=False)
+    major = db.Column(db.String(32), nullable=False)
 
 
 class Dens(db.Model):
@@ -66,7 +66,7 @@ class Posts(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
     username = db.Column(db.String(32), nullable=False)
-    content = db.Column(db.String(4096), nullable=False)
+    content = db.Column(db.String(256), nullable=False)
     time = db.Column(db.Date, nullable=False)
     den_id = db.Column(db.Integer, nullable=False)
 
@@ -109,8 +109,14 @@ with engine.connect() as connection:
                     print(
                         "\tERROR: There is no CSV to populate '{}'!\n".format(table_name))
                     continue
+
+                except pd.errors.EmptyDataError:
+                    print("\tERROR: ./csv/{}.csv is empty!\n".format(table_name))
+                    continue
+                # No exceptions encountered.
                 print("\t'{}' filled.\n\t{} seconds elapsed.\n".format(
                     table_name, (time.time() - start_time)))
             else:
-                print("\t'{}' table has data.\n".format(table_name))
+                print("\t'{}' table has {} entries.\n".format(
+                    table_name, row[0]))
     del inspector
