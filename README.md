@@ -30,7 +30,10 @@ To run this code:
 4. Run the application::
 
    ```
-   python app.py
+   export FLASK_APP=bobchat
+   export FLASK_ENV=development
+   flask init-db
+   flask run
    ```
 
 ## Troubleshooting
