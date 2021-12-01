@@ -5,6 +5,7 @@ This was a project required as part of coursework for Database Systems (CSE 111)
 
 ## 📝 TODO:
 
+- Load files in `./csv` into the appropriate database tables.
 - Make this project [installable](https://flask.palletsprojects.com/en/2.0.x/tutorial/install/)
 - Use Bootstrap for CSS
 - Make the user's home page the main index page when logged in. (Going to have to change around the routing for `den.py`)
