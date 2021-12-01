@@ -9,6 +9,8 @@ from flask.cli import with_appcontext
 import pandas as pd
 import os
 
+from werkzeug.security import generate_password_hash
+
 # g is a special object that is unique for each request.
 # It is used to store data that might be accessed by multiple
 # functions during the request. The connection is stored and
@@ -89,6 +91,28 @@ def init_db():
             print(
                 "\tWARNING: table {} does not exist in the schema.\n".format(table_name))
 
+    # For the users table specifically, we need to salt and hash their passwords.
+    if pd.io.sql.has_table('users', db):
+        print("\tSalting and hashing passwords...\n")
+        users_df = pd.read_csv(
+            'bobchat/csv/users.csv', index_col=0)
+        i = 1
+        for row in users_df.itertuples():
+            print('\r\t\t', str(i), end='')
+            print(" updated.", end='')
+            try:
+                db.execute(
+                    '''UPDATE users
+                        SET password = ?
+                        WHERE id = ?;''',
+                    (generate_password_hash(row[2]), row[0]),
+                )
+                db.commit()
+                i += 1
+            except Error as e:
+                print(e)
+        print('\n')
+
 
 # Defines a command line command called init-db that calls the init_db function and shows a success message to the user
 # Also see: https://flask.palletsprojects.com/en/2.0.x/cli/
@@ -102,6 +126,17 @@ def init_db_command():
         click.echo('Database initialized.')
 
 
+# Defines a command line command called test-sql, used for testing purposes.
+@click.command('test-sql')
+@with_appcontext
+def test_sql_command():
+    """Quick and dirty testing SQL statements on the database."""
+    db = get_db()
+    cur = db.cursor()
+    cur.execute('''SELECT * FROM users''')
+    print(cur.fetchall())
+
+
 # The close_db and init_db_command functions need to be registered with the application instance.
 # Otherwise, they won’t be used by the application. However, since we're using a factory function,
 # that instance isn’t available when writing the functions. Instead, write a function that takes
@@ -110,5 +145,6 @@ def init_app(app):
     # Tells Flask to call that function when cleaning up after returning the response.
     app.teardown_appcontext(close_db)
 
-    # Adds a new command that can be called with the flask command.
+    # Add commands that can be called with the flask command.
     app.cli.add_command(init_db_command)
+    app.cli.add_command(test_sql_command)
