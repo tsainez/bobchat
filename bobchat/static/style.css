@@ -46,7 +46,6 @@ header .action {
   display: block;
   padding: 0.5rem;
 }
-/* Project specific CSS */
 .content {
   padding: 0 1rem 1rem;
 }
@@ -110,4 +109,23 @@ input.danger {
 input[type="submit"] {
   align-self: start;
   min-width: 10em;
+}
+.column {
+  float: left;
+  flex: 50%;
+}
+.row {
+  display: flex;
+}
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.truncated {
+  flex: 1;
+  max-width: 451px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

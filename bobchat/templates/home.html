@@ -1,0 +1,49 @@
+{% extends 'base.html' %} {% block header %}
+<h1>{% block title %}Home{% endblock %}</h1>
+{% endblock %} {% block content %}
+<article class="post">
+  <header>
+    <div>
+      <h1>Welcome to Bobchat</h1>
+      <div class="about">
+        There are currently {{ site_data['users'] }} users with {{
+        site_data['posts'] }} posts!
+      </div>
+    </div>
+  </header>
+  <div class="row">
+    <div class="column">
+      <p style="margin-right: 20px">
+        Bobchat is a social media network for University of California, Merced
+        students to connect with eachother.
+      </p>
+      <p style="margin-right: 20px">
+        The website is built using Flask with a Sqlite3 backend. Additionally,
+        the project is open-source and can be found on GitHub
+        <a href="https://github.com/tsainez/bobchat">here</a>.
+      </p>
+    </div>
+    <div class="column">
+      <p style="text-align: right">See what students are posting right now!</p>
+      <hr />
+      {% for post in posts %}
+      <article class="post">
+        <header>
+          <div>
+            <h1>{{ post['title'] }}</h1>
+            <div class="about">
+              Posted by {{ post['username'] }} in {{ post['name'] }} on {{
+              post['created'] }}
+            </div>
+          </div>
+        </header>
+        <p class="body truncated">{{ post['body'] }}</p>
+      </article>
+      {% if not loop.last %}
+      <hr />
+      {% endif %} {% endfor %}
+    </div>
+  </div>
+  <hr />
+</article>
+{% endblock %}

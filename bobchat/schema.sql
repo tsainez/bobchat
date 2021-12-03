@@ -37,3 +37,13 @@ CREATE TABLE user_den_assoc(
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (den_id) REFERENCES dens (id)
 );
+SELECT users.username,
+    dens.name,
+    posts.*
+FROM posts,
+    users,
+    dens
+WHERE users.id = posts.author_id
+    AND dens.id = den_id
+ORDER BY created DESC
+LIMIT 10;
