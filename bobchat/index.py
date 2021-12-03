@@ -40,7 +40,7 @@ def index():
             posts;
         ''').fetchone()
 
-        return render_template('home.html', posts=recent_posts, site_data=site_data)
+        return render_template('index/home.html', posts=recent_posts, site_data=site_data)
     else:
         # SQL operations usually need to use values from Python variables.
         # However, beware of using Python’s string operations to assemble queries,
@@ -62,4 +62,4 @@ def index():
             AND users.id = posts.author_id
             AND dens.id = den_id
         ORDER BY created DESC;'''.format(session.get('user_id'))).fetchall()
-        return render_template('feed.html', posts=posts, recents=recent_posts)
+        return render_template('index/feed.html', posts=posts, recents=recent_posts)
