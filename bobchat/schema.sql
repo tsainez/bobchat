@@ -8,6 +8,7 @@ CREATE TABLE users (
     PASSWORD TEXT NOT NULL,
     firstname TEXT NOT NULL,
     lastname TEXT NOT NULL,
+    created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     email TEXT NOT NULL,
     major TEXT NOT NULL
 );
@@ -24,7 +25,10 @@ CREATE TABLE posts (
 CREATE TABLE dens(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
-    description TEXT NOT NULL
+    author_id INTEGER NOT NULL DEFAULT 1,
+    created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    description TEXT NOT NULL,
+    FOREIGN KEY (author_id) REFERENCES users (id)
 );
 CREATE TABLE user_den_assoc(
     id INTEGER PRIMARY KEY AUTOINCREMENT,

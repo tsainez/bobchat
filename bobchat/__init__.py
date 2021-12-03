@@ -60,11 +60,13 @@ def create_app(test_config=None):
     app.register_blueprint(auth.bp)
 
     # TODO:: Change the main index page to user, where you can view all the dens you're apart of.
-    from . import den
-    app.register_blueprint(den.bp)
+    from . import dens
+    app.register_blueprint(dens.bp)
     # Unlike the auth blueprint, the den blueprint does not have a url_prefix.
     # So the index view will be at /, the create view at /create, and so on.
+
+    from . import index
+    app.register_blueprint(index.bp)
     app.add_url_rule('/', endpoint='index')
-    # The den is the main feature of Bobchat, so it makes sense that the den index will be the main index.
 
     return app

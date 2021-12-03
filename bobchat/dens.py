@@ -7,27 +7,24 @@ from werkzeug.exceptions import abort
 from bobchat.auth import login_required
 from bobchat.db import get_db
 
-bp = Blueprint('den', __name__)
+bp = Blueprint('dens', __name__, url_prefix='/dens')
 
 
-# The index will show the most recent posts.
+# The index will show all the dens available, which you can click on to view a den in more detail.
 # A JOIN is used so that the author information from the user table is available in the result.
 @bp.route('/')
 def index():
     db = get_db()
-    posts = db.execute('''
-    SELECT p.id,
-        title,
-        body,
-        created,
-        author_id,
-        username
-    FROM posts p
-        JOIN users u ON p.author_id = u.id
-    ORDER BY created DESC
-    LIMIT 10;
+    results = db.execute('''
+    SELECT name,
+        username,
+        d.created,
+        description
+    FROM dens d
+        JOIN users u ON d.author_id = u.id
+    ORDER BY d.created DESC;
     ''').fetchall()
-    return render_template('den/index.html', posts=posts)
+    return render_template('dens/index.html', dens=results)
 
 
 # The create view works the same as the auth register view.
@@ -40,26 +37,26 @@ def index():
 # they will be redirected to the login page
 def create():
     if request.method == 'POST':
-        title = request.form['title']
-        body = request.form['body']
+        name = request.form['name']
+        description = request.form['description']
         error = None
 
-        if not title:
-            error = 'Title is required.'
+        if not name:
+            error = 'Name is required.'
 
         if error is not None:
             flash(error)
         else:
             db = get_db()
             db.execute(
-                'INSERT INTO posts (title, body, author_id)'
+                'INSERT INTO dens (name, description, author_id)'
                 ' VALUES (?, ?, ?)',
-                (title, body, g.user['id'])
+                (name, description, g.user['id'])
             )
             db.commit()
-            return redirect(url_for('den.index'))
+            return redirect(url_for('dens.index'))
 
-    return render_template('den/create.html')
+    return render_template('dens/create.html')
 
 
 # Both the update and delete views will need to fetch a post by id
@@ -117,9 +114,9 @@ def update(id):
                 (title, body, id)
             )
             db.commit()
-            return redirect(url_for('den.index'))
-    # To generate a URL to the update page, url_for() needs to be passed the id so it knows what to fill in: url_for('den.update', id=post['id'])
-    return render_template('den/update.html', post=post)
+            return redirect(url_for('dens.index'))
+    # To generate a URL to the update page, url_for() needs to be passed the id so it knows what to fill in: url_for('dens.update', id=post['id'])
+    return render_template('dens/update.html', post=post)
 
 
 # The delete view doesn’t have its own template, the delete button is part of update.html
@@ -132,4 +129,4 @@ def delete(id):
     db = get_db()
     db.execute('DELETE FROM posts WHERE id = ?', (id,))
     db.commit()
-    return redirect(url_for('den.index'))
+    return redirect(url_for('dens.index'))
