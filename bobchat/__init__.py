@@ -6,8 +6,16 @@ import os
 from flask import Flask
 
 
+# TODO:: Implement Flask-Bootstrap to handle our webpage styling.
+#           See: https://github.com/mbr/flask-bootstrap/blob/master/sample_app/__init__.py
+#           also: https://www.youtube.com/watch?v=4nzI4RKwb5I
+#           and: https://pythonhosted.org/Flask-Bootstrap/basic-usage.html
+
 def create_app(test_config=None):
-    # Create and configure the app
+    # We are using the "Application Factory"-pattern here, which is described
+    # in detail inside the Flask docs:
+    # http://flask.pocoo.org/docs/patterns/appfactories/
+
     app = Flask(__name__, instance_relative_config=True)
     # __name__ is the name of the current Python module.
     # The app needs to know where it’s located to set up some paths,

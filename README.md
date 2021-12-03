@@ -1,7 +1,6 @@
 # bobchat
 
 Bobchat is a social media network for University of California, Merced students.
-This was a project required as part of coursework for Database Systems (CSE 111), as well as Exploratory Computing (CSE 106).
 
 ## 💥 Quickstart
 

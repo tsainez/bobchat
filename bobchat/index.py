@@ -1,6 +1,6 @@
 # Define the blueprint and register it in the application factory.
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for, session
 )
 from werkzeug.exceptions import abort
 
@@ -16,9 +16,9 @@ bp = Blueprint('index', __name__)
 @bp.route('/')
 def index():
     db = get_db()
-    if g.user is None:
-        # We want the 5 most recent posts...
-        posts = db.execute('''
+
+    # Whether or not the user is logged in, we want to show the 5 most recently made posts...
+    recent_posts = db.execute('''
         SELECT users.username,
             dens.name,
             posts.*
@@ -31,15 +31,22 @@ def index():
         LIMIT 5;
         ''').fetchall()
 
-        # And also some site data to display in the about section...
+    if g.user is None:
+        # Some extra data about the site for displaying on the home page.
         site_data = db.execute('''
         SELECT COUNT(DISTINCT users.id) AS users,
             COUNT(DISTINCT posts.id) AS posts
         FROM users,
             posts;
         ''').fetchone()
-        return render_template('home.html', posts=posts, site_data=site_data)
+
+        return render_template('home.html', posts=recent_posts, site_data=site_data)
     else:
+        # SQL operations usually need to use values from Python variables.
+        # However, beware of using Python’s string operations to assemble queries,
+        # as they are vulnerable to SQL injection attacks.
+        # Instead, use the DB-API’s parameter substitution.
+        # See: https://docs.python.org/3/library/sqlite3.html
         posts = db.execute('''
         SELECT users.username,
             dens.name,
@@ -50,11 +57,9 @@ def index():
         WHERE den_id IN (
                 SELECT den_id
                 FROM user_den_assoc
-                WHERE user_id = 1
+                WHERE user_id = {}
             )
             AND users.id = posts.author_id
             AND dens.id = den_id
-        ORDER BY created DESC;
-        ''').fetchall()
-        return render_template('feed.html', posts=posts)
-        # return render_template('users/feed.html', posts = posts)
+        ORDER BY created DESC;'''.format(session.get('user_id'))).fetchall()
+        return render_template('feed.html', posts=posts, recents=recent_posts)

@@ -124,7 +124,6 @@ input[type="submit"] {
 }
 .truncated {
   flex: 1;
-  max-width: 451px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

@@ -37,7 +37,9 @@
             </div>
           </div>
         </header>
-        <p class="body truncated">{{ post['body'] }}</p>
+        <p style="max-width: 451px" class="body truncated">
+          {{ post['body'] }}
+        </p>
       </article>
       {% if not loop.last %}
       <hr />

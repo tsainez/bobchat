@@ -1,5 +1,5 @@
 {% extends 'base.html' %} {% block header %}
-<h1>{% block title %}Feed{% endblock %}</h1>
+<h1>{% block title %}Your Feed{% endblock %}</h1>
 {% endblock %} {% block content %} {% for post in posts %}
 <article class="post">
   <header>
@@ -11,7 +11,24 @@
       </div>
     </div>
   </header>
-  <p class="body">{{ post['body'] }}</p>
+  <p style="max-width: 928px" class="body truncated">{{ post['body'] }}</p>
+</article>
+{% if not loop.last %} {% endif %} {% endfor %}
+<br />
+<h1>Recent posts</h1>
+<hr />
+{% for post in recents %}
+<article class="post">
+  <header>
+    <div>
+      <h1>{{ post['title'] }}</h1>
+      <div class="about">
+        Posted by {{ post['username'] }} in {{ post['name'] }} on {{
+        post['created'] }}
+      </div>
+    </div>
+  </header>
+  <p style="max-width: 928px" class="body truncated">{{ post['body'] }}</p>
 </article>
 {% if not loop.last %}
 <hr />
