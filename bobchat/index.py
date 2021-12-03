@@ -16,7 +16,7 @@ bp = Blueprint('index', __name__)
 @bp.route('/')
 def index():
     if g.user is None:
-        return render_template('base.html')
+        return render_template('bobchat.html')
     else:
         db = get_db()
         posts = db.execute('''
