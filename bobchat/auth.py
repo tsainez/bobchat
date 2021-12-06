@@ -36,11 +36,15 @@ def register():
         # form keys and values. The user will input their username and password.
         username = request.form['username']
         password = request.form['password']
-
+        firstname = request.form['firstname']
+        lastname = request.form['lastname']
+        email = request.form['email']
+        major = request.form['major']
         db = get_db()
         error = None
 
         # Validate that username and password are not empty.
+        # redundant check in register.html form (required attribute on <input> tags)
         if not username:
             error = 'Username is required.'
         elif not password:
@@ -54,8 +58,8 @@ def register():
                 # library will take care of escaping the values so you are not vulnerable
                 # to a SQL injection attack.
                 db.execute(
-                    "INSERT INTO users (username, password) VALUES (?, ?)",
-                    (username, generate_password_hash(password)),
+                    "INSERT INTO users (username, password, firstname, lastname, email, major) VALUES (?, ?, ?, ?, ?, ?)",
+                    (username, generate_password_hash(password), firstname, lastname, email, major),
                 )
                 # For security, passwords should never be stored in the database directly.
                 # Instead, generate_password_hash() is used to securely hash the password,
