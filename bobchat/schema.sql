@@ -37,3 +37,10 @@ CREATE TABLE user_den_assoc(
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (den_id) REFERENCES dens (id)
 );
+CREATE TABLE post_like_assoc(
+    id integer PRIMARY KEY autoincrement,
+    user_id integer NOT NULL,
+    post_id integer NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (post_id) REFERENCES posts(id)
+);
