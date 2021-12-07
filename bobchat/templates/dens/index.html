@@ -6,7 +6,7 @@
 <article class="post">
   <header>
     <div>
-      <h1>{{ den['name'] }}</h1>
+      <a href="{{ url_for('dens.den', den_id = den['id'] ) }}"><h1>{{ den['name'] }}</h1></a>
       <div class="about">
         Den created by {{ den['username'] }} on {{ den['created'] }}
       </div>

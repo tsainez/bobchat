@@ -19,7 +19,8 @@ def index():
     SELECT name,
         username,
         d.created,
-        description
+        description,
+        d.id
     FROM dens d
         JOIN users u ON d.author_id = u.id
     ORDER BY d.created DESC;
@@ -91,7 +92,7 @@ def get_post(id, check_author=True):
 # The create and update views look very similar.
 # The main difference is that the update view uses a post object and an UPDATE query instead of an INSERT.
 # With some clever refactoring, you could use one view and template for both actions.
-@bp.route('/<int:id>/update', methods=('GET', 'POST'))
+@bp.route('/test/<int:id>/update', methods=('GET', 'POST'))
 @login_required
 def update(id):
     post = get_post(id)
@@ -122,7 +123,7 @@ def update(id):
 # The delete view doesn’t have its own template, the delete button is part of update.html
 # and posts to the /<id>/delete URL. Since there is no template, it will only handle the
 # POST method and then redirect to the index view.
-@bp.route('/<int:id>/delete', methods=('POST',))
+@bp.route('/test/<int:id>/delete', methods=('POST',))
 @login_required
 def delete(id):
     get_post(id)
@@ -130,3 +131,63 @@ def delete(id):
     db.execute('DELETE FROM posts WHERE id = ?', (id,))
     db.commit()
     return redirect(url_for('dens.index'))
+
+# return all the posts associated with a den
+@bp.route('/<int:den_id>')
+@login_required
+def den(den_id):
+    posts = get_posts(den_id)
+    den_info = get_den_info(den_id)
+    # print(posts[0]['author_id'])
+    # return '<p>{}</p>'.format(str(posts))
+    return render_template('dens/den.html', den = den_info, posts=posts)
+
+# returns of a list of sqlite3 objects
+# containing all available information dens queried by id (id of den) 
+def get_den_info(den_id):
+    info = get_db().execute('''
+    select dens.name, dens.created, dens.description, users.username, dens.id
+    from dens, users
+    where users.id = dens.author_id
+    and dens.id = ?
+    ''',
+    (den_id,)
+    ).fetchone()
+    return info
+
+# returns a list of sqlite3 objects
+# containing username, date dreated, and title of posts queried by den_id
+def get_posts(den_id):
+    posts = get_db().execute('''
+    select users.username, posts.created, posts.title, posts.id
+    from posts, users
+    where posts.author_id = users.id 
+    and den_id = ?
+    order by posts.created DESC
+    ''',
+    (den_id,)
+    ).fetchall()
+    return posts
+
+
+# returns information about the post.
+# TODO: also return comments/likes/other info
+@bp.route('/<int:den_id>/<int:post_id>')
+@login_required
+def den_post(den_id, post_id):
+    den_info = get_den_info(den_id)
+    post_info = get_post(post_id)
+    return render_template('dens/post.html', den = den_info, post = post_info)
+
+# returns username, date created, title, body of a single post
+# queried by id (id of post)
+def get_post(post_id):
+    post = get_db().execute('''
+    select users.username, posts.created, posts.title, posts.body
+    from posts, users
+    where users.id = posts.author_id
+    and posts.id = ?
+    ''',
+    (post_id,)
+    ).fetchone()
+    return post

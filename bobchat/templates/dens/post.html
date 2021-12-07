@@ -1,0 +1,24 @@
+{% extends 'base.html' %} 
+{% block header %}
+<h1>{% block title %}<a href="{{ url_for('dens.den', den_id = den['id']) }}">{{ den['name'] }}</a>{% endblock %}</h1>
+<div class="about">
+    Den created by {{ den['username'] }} on {{ den['created'] }}
+</div>
+{% endblock %} 
+{% block content %} 
+<article class="post">
+    <header>
+      <div>
+        <div>
+           <h1>{{ post['title'] }}</h1> 
+        </div>
+        <div class="about">
+          Posted created by {{ post['username'] }} on {{ post['created'] }}
+        </div>
+        <div>
+            <p>{{ post['body'] }}</p>
+        </div>
+      </div>
+</header>
+<hr />
+{% endblock %}
