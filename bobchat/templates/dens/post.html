@@ -25,6 +25,23 @@
           </form>
         </div>
       </div>
-</header>
-<hr />
+  </header>
+</article>
+<hr/>
+<form method="POST" action="{{ url_for('dens.comment', den_id = den['id'], post_id = post['id']) }} ">
+  <label for="comment">Comment</label>
+  <input name = "comment" id = "comment" required/>
+  <input type="submit" value="post"/>
+</form>
+<hr/>
+<p>Comments:</p>
+{% for comment in comments %}
+<div> 
+  {{ comment['username'] }}:
+</div>
+<div>
+  {{ comment['body'] }}
+</div>
+<hr/>
+{% endfor %}
 {% endblock %}

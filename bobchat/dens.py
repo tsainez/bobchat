@@ -193,7 +193,8 @@ def den_post(den_id, post_id):
     den_info = get_den_info(den_id)
     post_info = get_post(post_id)
     likes = get_likes(post_id)
-    return render_template('dens/post.html', den = den_info, post = post_info, likes = likes)
+    comments = get_comments(post_id)
+    return render_template('dens/post.html', den = den_info, post = post_info, likes = likes, comments = comments)
 
 # returns username, date created, title, body of a single post
 # queried by id (id of post)
@@ -217,3 +218,33 @@ def get_likes(post_id):
     (post_id,)
     ).fetchone()
     return likes['count']
+
+def get_comments(post_id):
+    comments = get_db().execute('''
+        select users.username, comments.body
+        from comments, users
+        where comments.author_id = users.id
+        and comments.post_id = ?;
+    ''',
+    (post_id,)).fetchall()
+    return comments
+
+@bp.route('/<int:den_id>/<int:post_id>/comment', methods=['POST'])
+@login_required
+def comment(den_id, post_id):
+    body = request.form['comment']
+
+    get_db().execute('''
+    insert into comments(author_id, post_id, body)
+    values(?, ?, ?)
+    ''',
+    (g.user['id'], post_id, body)
+    )
+    get_db().commit()
+    
+    den_info = get_den_info(den_id)
+    post_info = get_post(post_id)
+    likes = get_likes(post_id)
+    comments = get_comments(post_id)
+    return render_template('dens/post.html', den = den_info, post = post_info, likes = likes, comments = comments)
+

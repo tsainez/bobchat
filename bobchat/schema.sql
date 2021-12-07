@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS posts;
 DROP TABLE IF EXISTS dens;
 DROP TABLE IF EXISTS user_den_assoc;
 drop table if exists post_like_assoc;
+drop table if exists comments;
 CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
@@ -45,4 +46,12 @@ CREATE TABLE post_like_assoc(
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (post_id) REFERENCES posts(id),
     unique(user_id, post_id)
+);
+create table comments(
+    id integer primary key autoincrement,
+    author_id integer not null,
+    post_id integer not null,
+    body text not null,
+    foreign key (post_id) references posts(id),
+    foreign key (author_id) references users(id)
 );
