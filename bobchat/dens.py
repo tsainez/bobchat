@@ -6,7 +6,6 @@ from werkzeug.exceptions import abort
 
 from bobchat.auth import login_required
 from bobchat.db import get_db
-
 bp = Blueprint('dens', __name__, url_prefix='/dens')
 
 
@@ -169,25 +168,52 @@ def get_posts(den_id):
     ).fetchall()
     return posts
 
-
 # returns information about the post.
 # TODO: also return comments/likes/other info
-@bp.route('/<int:den_id>/<int:post_id>')
+@bp.route('/<int:den_id>/<int:post_id>', methods=['POST','GET'])
 @login_required
 def den_post(den_id, post_id):
+    if request.method == 'POST':
+        try:
+            get_db().execute('''
+                insert into post_like_assoc(user_id, post_id) values(?, ?);
+            ''',(g.user['id'], post_id,)
+            )
+            get_db().commit()
+        except get_db().IntegrityError:
+            print('already liked')
+            get_db().execute('''
+                delete from post_like_assoc 
+                where user_id = ?
+                and post_id = ?;
+            ''',(g.user['id'], post_id,)
+            )
+            get_db().commit()
+
     den_info = get_den_info(den_id)
     post_info = get_post(post_id)
-    return render_template('dens/post.html', den = den_info, post = post_info)
+    likes = get_likes(post_id)
+    return render_template('dens/post.html', den = den_info, post = post_info, likes = likes)
 
 # returns username, date created, title, body of a single post
 # queried by id (id of post)
 def get_post(post_id):
     post = get_db().execute('''
-    select users.username, posts.created, posts.title, posts.body
-    from posts, users
+    select posts.id, users.username, posts.created, posts.title, posts.body
+    from posts, users, post_like_assoc
     where users.id = posts.author_id
-    and posts.id = ?
+    and posts.id = ?;
     ''',
     (post_id,)
     ).fetchone()
     return post
+
+def get_likes(post_id):
+    likes = get_db().execute('''
+    select count(*) as count
+    from post_like_assoc
+    where post_id = ?;
+    ''',
+    (post_id,)
+    ).fetchone()
+    return likes['count']

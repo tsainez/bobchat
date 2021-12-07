@@ -18,6 +18,12 @@
         <div>
             <p>{{ post['body'] }}</p>
         </div>
+        <div>
+          <p>likes: {{ likes }}</p>
+          <form method="POST" action="{{ url_for('dens.den_post', den_id = den['id'], post_id = post['id']) }}">
+            <input type="submit" value="Like">
+          </form>
+        </div>
       </div>
 </header>
 <hr />

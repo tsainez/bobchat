@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS posts;
 DROP TABLE IF EXISTS dens;
 DROP TABLE IF EXISTS user_den_assoc;
+drop table if exists post_like_assoc;
 CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
@@ -42,5 +43,6 @@ CREATE TABLE post_like_assoc(
     user_id integer NOT NULL,
     post_id integer NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (post_id) REFERENCES posts(id)
+    FOREIGN KEY (post_id) REFERENCES posts(id),
+    unique(user_id, post_id)
 );
