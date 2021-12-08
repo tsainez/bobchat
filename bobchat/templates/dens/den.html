@@ -4,7 +4,6 @@
     Den created by {{ den['username'] }} on {{ den['created'] }}
 </div>
 {% if g.user %}
-<!-- <a class="action" href="{{ url_for('dens.posts.index') }}">New</a> -->
 {% endif %} {% endblock %} {% block content %} {% for post in posts %}
 <article class="post">
   <header>

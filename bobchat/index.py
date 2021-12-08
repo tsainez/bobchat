@@ -21,16 +21,19 @@ def index():
     recent_posts = db.execute('''
         SELECT users.username,
             dens.name,
-            posts.*
+            dens.id as den_id,
+            posts.id as post_id,
+            posts.created,
+            posts.body,
+            posts.title
         FROM posts,
             users,
             dens
         WHERE users.id = posts.author_id
             AND dens.id = den_id
-        ORDER BY created DESC
+        ORDER BY posts.created DESC
         LIMIT 5;
         ''').fetchall()
-
     if g.user is None:
         # Some extra data about the site for displaying on the home page.
         site_data = db.execute('''
@@ -50,7 +53,11 @@ def index():
         posts = db.execute('''
         SELECT users.username,
             dens.name,
-            posts.*
+            dens.id as den_id,
+            posts.id as post_id,
+            posts.created,
+            posts.body,
+            posts.title
         FROM posts,
             users,
             dens
@@ -61,5 +68,5 @@ def index():
             )
             AND users.id = posts.author_id
             AND dens.id = den_id
-        ORDER BY created DESC;'''.format(session.get('user_id'))).fetchall()
+        ORDER BY posts.created DESC;'''.format(session.get('user_id'))).fetchall()
         return render_template('index/feed.html', posts=posts, recents=recent_posts)
