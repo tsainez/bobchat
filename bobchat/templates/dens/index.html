@@ -1,8 +1,18 @@
-{% extends 'base.html' %} {% block header %}
+{% extends 'base.html' %}
+
+{% block navList %}
+  <li><a href="{{ url_for('index.index') }}">My Feed</a></li>
+{% endblock %}
+
+{% block header %}
 <h1>{% block title %}Dens{% endblock %}</h1>
 {% if g.user %}
 <a class="action" href="{{ url_for('dens.create') }}">New</a>
-{% endif %} {% endblock %} {% block content %} {% for den in dens %}
+{% endif %} 
+{% endblock %} 
+
+{% block content %} 
+{% for den in dens %}
 <article class="post">
   <header>
     <div>
@@ -11,9 +21,16 @@
         Den created by {{ den['username'] }} on {{ den['created'] }}
       </div>
     </div>
+    <div>
+      {% if den['username'] == g.user['username'] %}
+      <a href="{{ url_for('dens.update', id = den['id']) }}">Update</a>
+      {% endif %}
+    </div>
   </header>
   <p class="body">{{ den['description'] }}</p>
 </article>
 {% if not loop.last %}
 <hr />
-{% endif %} {% endfor %} {% endblock %}
+{% endif %} 
+{% endfor %}
+{% endblock %}

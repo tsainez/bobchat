@@ -91,10 +91,10 @@ def get_post(id, check_author=True):
 # The create and update views look very similar.
 # The main difference is that the update view uses a post object and an UPDATE query instead of an INSERT.
 # With some clever refactoring, you could use one view and template for both actions.
-@bp.route('/test/<int:id>/update', methods=('GET', 'POST'))
+@bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
 def update(id):
-    post = get_post(id)
+    den = get_den_info(id)
 
     if request.method == 'POST':
         title = request.form['title']
@@ -116,18 +116,19 @@ def update(id):
             db.commit()
             return redirect(url_for('dens.index'))
     # To generate a URL to the update page, url_for() needs to be passed the id so it knows what to fill in: url_for('dens.update', id=post['id'])
-    return render_template('dens/update.html', post=post)
+    return render_template('dens/update.html', den=den)
 
 
 # The delete view doesn’t have its own template, the delete button is part of update.html
 # and posts to the /<id>/delete URL. Since there is no template, it will only handle the
 # POST method and then redirect to the index view.
-@bp.route('/test/<int:id>/delete', methods=('POST',))
+@bp.route('/<int:den_id>/delete', methods=('POST','GET'))
 @login_required
-def delete(id):
-    get_post(id)
+def delete(den_id):
+    get_post(den_id)
     db = get_db()
-    db.execute('DELETE FROM posts WHERE id = ?', (id,))
+    db.execute('pragma foreign_keys = on;')
+    db.execute('delete FROM dens WHERE id = ?', (den_id,))
     db.commit()
     return redirect(url_for('dens.index'))
 
@@ -192,6 +193,8 @@ def den_post(den_id, post_id):
 
     den_info = get_den_info(den_id)
     post_info = get_post(post_id)
+    print(post_id)
+    print(post_info)
     likes = get_likes(post_id)
     comments = get_comments(post_id)
     return render_template('dens/post.html', den = den_info, post = post_info, likes = likes, comments = comments)
@@ -201,7 +204,7 @@ def den_post(den_id, post_id):
 def get_post(post_id):
     post = get_db().execute('''
     select posts.id, users.username, posts.created, posts.title, posts.body
-    from posts, users, post_like_assoc
+    from posts, users
     where users.id = posts.author_id
     and posts.id = ?;
     ''',

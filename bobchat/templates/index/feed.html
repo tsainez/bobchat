@@ -1,6 +1,15 @@
-{% extends 'base.html' %} {% block header %}
+{% extends 'base.html' %} 
+
+{% block navList %}
+  <li><a href="{{ url_for('dens.index') }}">All Dens</a></li>
+{% endblock %}
+
+{% block header %}
 <h1>{% block title %}Your Feed{% endblock %}</h1>
-{% endblock %} {% block content %} {% for post in posts %}
+{% endblock %} 
+
+{% block content %} 
+{% for post in posts %}
 <article class="post">
   <header>
     <div>
@@ -13,7 +22,9 @@
   </header>
   <p style="max-width: 928px" class="body truncated">{{ post['body'] }}</p>
 </article>
-{% if not loop.last %} {% endif %} {% endfor %}
+{% if not loop.last %} 
+{% endif %} 
+{% endfor %}
 <br />
 <h1>Recent posts</h1>
 <hr />
@@ -32,4 +43,6 @@
 </article>
 {% if not loop.last %}
 <hr />
-{% endif %} {% endfor %} {% endblock %}
+{% endif %}
+{% endfor %} 
+{% endblock %}

@@ -1,10 +1,22 @@
-{% extends 'base.html' %} {% block header %}
+{% extends 'base.html' %}
+{% if g.user %}
+{% block navList %}
+  <li><a href="">New Post</a></li>
+  <li><a href="{{ url_for('dens.index') }}">All Dens</a></li>
+  <li><a href="{{ url_for('index.index') }}">My Feed</a></li>
+{% endblock %} 
+{% endif %}
+
+{% block header %}
 <h1>{% block title %}{{ den['name'] }}{% endblock %}</h1>
 <div class="about">
-    Den created by {{ den['username'] }} on {{ den['created'] }}
+  <p>Den created by {{ den['username'] }} on {{ den['created'] }}</p>
 </div>
-{% if g.user %}
-{% endif %} {% endblock %} {% block content %} {% for post in posts %}
+
+
+ {% endblock %} 
+ {% block content %}
+ {% for post in posts %}
 <article class="post">
   <header>
     <div>
@@ -14,8 +26,9 @@
       </div>
     </div>
   </header>
-  <!-- <p class="body">{{ post['title'] }}</p> -->
 </article>
 {% if not loop.last %}
 <hr />
-{% endif %} {% endfor %} {% endblock %}
+{% endif %} 
+{% endfor %} 
+{% endblock %}
