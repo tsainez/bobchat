@@ -33,11 +33,19 @@
   <input name = "comment" id = "comment" required/>
   <input type="submit" value="post"/>
 </form>
-<hr/>
 <p>Comments:</p>
+<hr/>
 {% for comment in comments %}
+{% if comment['username'] == g.user['username'] %}
+<form method="POST" action= "{{ url_for('posts.delete', comment_id = comment['id']) }}">
+  <input name = "den_id" type="hidden" value = "{{ den['id'] }}"/>
+  <input name = "post_id" type ="hidden" value = "{{ post['id'] }}"/>
+  <input type ="submit" value="delete" />
+</form>
+{% endif %}
 <div> 
-  {{ comment['username'] }}:
+  <p>{{ comment['created'] }}</p> 
+  <p>{{ comment['username'] }}:</p>
 </div>
 <div>
   {{ comment['body'] }}

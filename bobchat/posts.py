@@ -11,7 +11,26 @@ from bobchat.db import get_db
 
 bp = Blueprint('posts', __name__, url_prefix='/posts')
 
+# route to delete a comment
+# can only delete comments if you are the author
+@bp.route('/delete/<int:comment_id>', methods=['POST'])
+@login_required
+def delete(comment_id):
+    author_id = get_db().execute('''
+        select author_id
+        from comments
+        where id = ?
+    ''',(comment_id,)).fetchone()
 
-@bp.route('/')
-def index():
-    return '<p>DJFHSDLJFHSDLJHFLKJSDHF</p>'
+    if g.user['id'] != author_id['author_id']:
+        abort(403)
+
+    get_db().execute('''
+        delete from comments
+        where id = ?
+    ''',(comment_id,))
+    get_db().commit()
+
+    den_id = request.form['den_id']
+    post_id = request.form['post_id']
+    return redirect(url_for('dens.den_post', den_id = den_id, post_id = post_id))

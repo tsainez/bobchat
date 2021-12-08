@@ -209,6 +209,10 @@ def get_post(post_id):
     ).fetchone()
     return post
 
+
+# returns the number of likes by post_id
+# originally I tried to make this a part of get_post(post_id) but ran into
+# trouble when there were zero likes it would return an empty list 
 def get_likes(post_id):
     likes = get_db().execute('''
     select count(*) as count
@@ -219,16 +223,21 @@ def get_likes(post_id):
     ).fetchone()
     return likes['count']
 
+# return a list of comments
+# originallly tried to make this a part of get_post(post_id) but ran into same trouble as get_post(post_id)
 def get_comments(post_id):
     comments = get_db().execute('''
-        select users.username, comments.body
+        select users.username, comments.body, comments.created, comments.id
         from comments, users
         where comments.author_id = users.id
-        and comments.post_id = ?;
+        and comments.post_id = ?
+        order by comments.created DESC;
     ''',
     (post_id,)).fetchall()
     return comments
 
+# route that is used when the user wants to comment on a post
+# users are not checked to be members of the den in which the post exists
 @bp.route('/<int:den_id>/<int:post_id>/comment', methods=['POST'])
 @login_required
 def comment(den_id, post_id):
@@ -241,10 +250,6 @@ def comment(den_id, post_id):
     (g.user['id'], post_id, body)
     )
     get_db().commit()
-    
-    den_info = get_den_info(den_id)
-    post_info = get_post(post_id)
-    likes = get_likes(post_id)
-    comments = get_comments(post_id)
-    return render_template('dens/post.html', den = den_info, post = post_info, likes = likes, comments = comments)
+    return redirect(url_for('dens.den_post', den_id = den_id, post_id = post_id))
+
 

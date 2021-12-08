@@ -52,6 +52,7 @@ create table comments(
     author_id integer not null,
     post_id integer not null,
     body text not null,
+    created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     foreign key (post_id) references posts(id),
     foreign key (author_id) references users(id)
 );
