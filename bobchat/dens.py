@@ -11,19 +11,33 @@ bp = Blueprint('dens', __name__, url_prefix='/dens')
 
 # The index will show all the dens available, which you can click on to view a den in more detail.
 # A JOIN is used so that the author information from the user table is available in the result.
-@bp.route('/')
+@bp.route('/', methods = ['POST', 'GET'])
 def index():
     db = get_db()
-    results = db.execute('''
-    SELECT name,
-        username,
-        d.created,
-        description,
-        d.id
-    FROM dens d
-        JOIN users u ON d.author_id = u.id
-    ORDER BY d.created DESC;
-    ''').fetchall()
+    if request.method == 'POST' and request.form['search'] != '':
+        print('user is looking for: {}'.format(request.form['search']))
+        results = db.execute('''
+            SELECT name,
+            username,
+            d.created,
+            description,
+            d.id
+            FROM dens d
+            JOIN users u ON d.author_id = u.id
+            where d.name like '%{}%'
+            ORDER BY d.created DESC;
+        '''.format(request.form['search'])).fetchall()
+    else:
+        results = db.execute('''
+        SELECT name,
+            username,
+            d.created,
+            description,
+            d.id
+        FROM dens d
+            JOIN users u ON d.author_id = u.id
+        ORDER BY d.created DESC;
+        ''').fetchall()
     return render_template('dens/index.html', dens=results)
 
 
@@ -133,13 +147,14 @@ def delete(den_id):
     return redirect(url_for('dens.index'))
 
 # return all the posts associated with a den
-@bp.route('/<int:den_id>')
+@bp.route('/<int:den_id>',methods = ['POST', 'GET'])
 @login_required
 def den(den_id):
-    posts = get_posts(den_id)
+    search = ''
+    if request.method == 'POST':
+        search = request.form['search']
+    posts = get_posts(den_id, search)
     den_info = get_den_info(den_id)
-    # print(posts[0]['author_id'])
-    # return '<p>{}</p>'.format(str(posts))
     return render_template('dens/den.html', den = den_info, posts=posts)
 
 # returns of a list of sqlite3 objects
@@ -157,16 +172,26 @@ def get_den_info(den_id):
 
 # returns a list of sqlite3 objects
 # containing username, date dreated, and title of posts queried by den_id
-def get_posts(den_id):
-    posts = get_db().execute('''
-    select users.username, posts.created, posts.title, posts.id
-    from posts, users
-    where posts.author_id = users.id 
-    and den_id = ?
-    order by posts.created DESC
-    ''',
-    (den_id,)
-    ).fetchall()
+def get_posts(den_id, search):
+    if search == '':
+        posts = get_db().execute('''
+        select users.username, posts.created, posts.title, posts.id
+        from posts, users
+        where posts.author_id = users.id 
+        and den_id = ?
+        order by posts.created DESC
+        ''',
+        (den_id,)).fetchall()
+    else:
+        posts = get_db().execute('''
+        select users.username, posts.created, posts.title, posts.id
+        from posts, users
+        where posts.author_id = users.id 
+        and den_id = {}
+        and posts.title like '%{}%'
+        order by posts.created DESC
+        '''.format(den_id, search)).fetchall()
+    print('user is looking for {}'.format(search))
     return posts
 
 # returns information about the post.

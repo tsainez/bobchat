@@ -2,13 +2,17 @@
 
 {% block navList %}
   <li><a href="{{ url_for('index.index') }}">My Feed</a></li>
+  <li><a class="action" href="{{ url_for('dens.create') }}">Create Den</a></li>
 {% endblock %}
 
 {% block header %}
-<h1>{% block title %}Dens{% endblock %}</h1>
-{% if g.user %}
-<a class="action" href="{{ url_for('dens.create') }}">New</a>
-{% endif %} 
+<div>
+  <h1>{% block title %}Dens{% endblock %}</h1>
+  <form method="POST">
+    <input name = "search" id = "search" type="text"/>
+    <input type="submit" value = "Search Dens"/>
+  </form>
+</div>
 {% endblock %} 
 
 {% block content %} 

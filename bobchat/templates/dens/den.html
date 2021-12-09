@@ -8,15 +8,17 @@
 {% endif %}
 
 {% block header %}
-<h1>{% block title %}{{ den['name'] }}{% endblock %}</h1>
 <div class="about">
-  <p>Den created by {{ den['username'] }} on {{ den['created'] }}</p>
+<h1>{% block title %}{{ den['name'] }}{% endblock %}</h1>
+  <form method="POST">
+    <input name = "search" id = "search" type = "text" />
+    <input type = "submit" value = "Search {{den['name']}}" />
+  </form>
 </div>
+{% endblock %} 
 
-
- {% endblock %} 
- {% block content %}
- {% for post in posts %}
+{% block content %}
+{% for post in posts %}
 <article class="post">
   <header>
     <div>

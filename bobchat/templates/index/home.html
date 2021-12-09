@@ -33,10 +33,9 @@
       <article class="post">
         <header>
           <div>
-            <h1>{{ post['title'] }}</h1>
+            <a href=" {{ url_for('dens.den_post', den_id = post['den_id'], post_id = post['post_id']) }}"><h1>{{ post['title'] }}</h1></a>
             <div class="about">
-              Posted by {{ post['username'] }} in {{ post['name'] }} on {{
-              post['created'] }}
+              Posted by {{ post['username'] }} in <a href=" {{ url_for('dens.den', den_id = post['den_id']) }} ">{{ post['name'] }}</a> on {{post['created'] }}
             </div>
           </div>
         </header>
