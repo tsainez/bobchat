@@ -1,0 +1,14 @@
+{% extends 'base.html' %} 
+{% block header %}
+<h1>{% block title %}New Post in {{ den['name'] }}{% endblock %}</h1>
+{% endblock %}
+
+ {% block content %}
+<form method="POST">
+  <label for="title">Title</label>
+  <input name="title" id="title" required />
+  <label for="body">Content</label>
+  <textarea name="body" id="body"></textarea>
+  <input type="submit" value="Post" />
+</form>
+{% endblock %}

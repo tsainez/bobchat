@@ -193,8 +193,8 @@ def den_post(den_id, post_id):
 
     den_info = get_den_info(den_id)
     post_info = get_post(post_id)
-    print(post_id)
-    print(post_info)
+    # print(post_id)
+    # print(post_info)
     likes = get_likes(post_id)
     comments = get_comments(post_id)
     return render_template('dens/post.html', den = den_info, post = post_info, likes = likes, comments = comments)

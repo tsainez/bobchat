@@ -1,3 +1,4 @@
+pragma foreign_keys = on;
 DROP TABLE IF EXISTS user_den_assoc;
 drop table if exists comments;
 DROP TABLE IF EXISTS posts;
@@ -31,23 +32,23 @@ CREATE TABLE if not exists posts (
     created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     title TEXT NOT NULL,
     body TEXT NOT NULL,
-    FOREIGN KEY (author_id) REFERENCES users(id) on delete cascade on update cascade,
-    FOREIGN KEY (den_id) REFERENCES dens(id) on delete cascade on update cascade
+    FOREIGN KEY (author_id) REFERENCES users(id) on delete cascade,
+    FOREIGN KEY (den_id) REFERENCES dens(id) on delete cascade
 );
 
 CREATE TABLE if not exists user_den_assoc(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     den_id INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) on delete cascade on update cascade,
-    FOREIGN KEY (den_id) REFERENCES dens(id) on delete cascade on update cascade
+    FOREIGN KEY (user_id) REFERENCES users(id) on delete cascade,
+    FOREIGN KEY (den_id) REFERENCES dens(id) on delete cascade
 );
 CREATE TABLE if not exists post_like_assoc(
     id integer PRIMARY KEY autoincrement,
     user_id integer NOT NULL,
     post_id integer NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) on delete cascade on update cascade,
-    FOREIGN KEY (post_id) REFERENCES posts(id) on delete cascade on update cascade,
+    FOREIGN KEY (user_id) REFERENCES users(id) on delete cascade,
+    FOREIGN KEY (post_id) REFERENCES posts(id) on delete cascade,
     unique(user_id, post_id)
 );
 create table if not exists comments(
@@ -56,7 +57,7 @@ create table if not exists comments(
     post_id integer not null,
     body text not null,
     created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    foreign key (post_id) references posts(id) on delete cascade on update cascade,
-    foreign key (author_id) references users(id)on delete cascade on update cascade
+    foreign key (post_id) references posts(id) on delete cascade,
+    foreign key (author_id) references users(id)on delete cascade
 );
 
