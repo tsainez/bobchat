@@ -75,7 +75,8 @@ def init_db():
             return -1
 
     # Attempt to populate all the tables with default data.
-    for file_name in os.listdir('bobchat/csv'):
+    # os.listdir('bobchat/csv')
+    for file_name in ['users.csv','dens.csv','posts.csv','comments.csv','post_like_assoc.csv','user_den_assoc.csv']:
         table_name = file_name[:-4]  # Removing '.csv' from the file_name
 
         if pd.io.sql.has_table(table_name, db):
