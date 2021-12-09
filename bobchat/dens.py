@@ -15,7 +15,7 @@ bp = Blueprint('dens', __name__, url_prefix='/dens')
 def index():
     db = get_db()
     if request.method == 'POST' and request.form['search'] != '':
-        print('user is looking for: {}'.format(request.form['search']))
+        # print('user is looking for: {}'.format(request.form['search']))
         results = db.execute('''
             SELECT name,
             username,
@@ -153,9 +153,19 @@ def den(den_id):
     search = ''
     if request.method == 'POST':
         search = request.form['search']
+    follow = get_db().execute('''
+        select *
+        from user_den_assoc
+        where user_id = {}
+        and den_id = {}
+    '''.format(g.user['id'], den_id)).fetchone()
+    if follow is None:
+        follow = 'follow'
+    else:
+        follow = 'unfollow'
     posts = get_posts(den_id, search)
     den_info = get_den_info(den_id)
-    return render_template('dens/den.html', den = den_info, posts=posts)
+    return render_template('dens/den.html', den = den_info, posts=posts, follow = follow)
 
 # returns of a list of sqlite3 objects
 # containing all available information dens queried by id (id of den) 
@@ -191,7 +201,7 @@ def get_posts(den_id, search):
         and posts.title like '%{}%'
         order by posts.created DESC
         '''.format(den_id, search)).fetchall()
-    print('user is looking for {}'.format(search))
+    # print('user is looking for {}'.format(search))
     return posts
 
 # returns information about the post.
@@ -280,4 +290,22 @@ def comment(den_id, post_id):
     get_db().commit()
     return redirect(url_for('dens.den_post', den_id = den_id, post_id = post_id))
 
-
+@bp.route('/follow', methods=['POST'])
+@login_required
+def follow():
+    db = get_db()
+    den_id = request.form['den_id']
+    if request.form['follow'] == 'unfollow':
+        db.execute('''
+            delete from user_den_assoc
+            where user_id = {}
+            and den_id = {}
+        '''.format(g.user['id'], den_id))
+        db.commit()
+    else:
+        db.execute('''
+            insert into user_den_assoc(user_id, den_id)
+            values({},{})
+        '''.format(g.user['id'], den_id))
+        db.commit()
+    return redirect(url_for('dens.den', den_id = den_id))

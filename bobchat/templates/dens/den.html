@@ -9,7 +9,12 @@
 
 {% block header %}
 <div class="about">
-<h1>{% block title %}{{ den['name'] }}{% endblock %}</h1>
+  <h1>{% block title %}{{ den['name'] }}{% endblock %}</h1>
+  <form method="POST" action="{{ url_for('dens.follow') }}">
+    <input type = "hidden" name = "follow" value = "{{follow}}"/>
+    <input type = "hidden" name = "den_id" value = "{{den['id']}}" />
+    <input type = "submit" value = "{{follow}}" />
+  </form>
   <form method="POST">
     <input name = "search" id = "search" type = "text" />
     <input type = "submit" value = "Search {{den['name']}}" />
