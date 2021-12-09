@@ -18,6 +18,9 @@
         Posted by {{ post['username'] }} in <a href="{{ url_for('dens.den', den_id = post['den_id']) }}"> {{ post['name'] }} </a> on {{
         post['created'] }}
       </div>
+      <div>
+        likes: {{ post['likes'] }}
+      </div>
     </div>
   </header>
   <p style="max-width: 928px" class="body truncated">{{ post['body'] }}</p>
@@ -36,6 +39,9 @@
       <div class="about">
         Posted by {{ post['username'] }} in <a href="{{ url_for('dens.den', den_id = post['den_id']) }}"> {{ post['name'] }} </a> on {{
         post['created'] }}
+      </div>
+      <div>
+        likes: {{ post['likes'] }}
       </div>
     </div>
   </header>

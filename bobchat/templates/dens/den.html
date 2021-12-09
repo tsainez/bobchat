@@ -31,6 +31,9 @@
       <div class="about">
         Posted created by {{ post['username'] }} on {{ post['created'] }}
       </div>
+      <div>
+        likes: {{ post['likes'] }}
+      </div>
     </div>
     {% if g.user['username'] == post['username'] %}
     <div>

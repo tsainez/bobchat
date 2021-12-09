@@ -20,17 +20,21 @@ def index():
     # Whether or not the user is logged in, we want to show the 5 most recently made posts...
     recent_posts = db.execute('''
         SELECT users.username,
-            dens.name,
-            dens.id as den_id,
-            posts.id as post_id,
-            posts.created,
-            posts.body,
-            posts.title
-        FROM posts,
-            users,
-            dens
+        dens.name,
+        dens.id as den_id,
+        posts.id as post_id,
+        posts.created,
+        posts.body,
+        posts.title,
+        ifNull(post.likes,0) as likes
+        FROM users, dens, posts left join
+            (
+                select post_id, count(*) as likes
+                from post_like_assoc
+                group by post_like_assoc.post_id
+            ) as post on post_id = posts.id
         WHERE users.id = posts.author_id
-            AND dens.id = den_id
+        AND dens.id = den_id
         ORDER BY posts.created DESC
         LIMIT 5;
         ''').fetchall()
@@ -57,10 +61,14 @@ def index():
             posts.id as post_id,
             posts.created,
             posts.body,
-            posts.title
-        FROM posts,
-            users,
-            dens
+            posts.title,
+            ifNull(post.likes,0) as likes
+        FROM users, dens, posts left join
+        (
+            select post_id, count(*) as likes
+            from post_like_assoc
+            group by post_like_assoc.post_id
+        ) as post on post_id = posts.id
         WHERE den_id IN (
                 SELECT den_id
                 FROM user_den_assoc

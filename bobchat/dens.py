@@ -185,22 +185,36 @@ def get_den_info(den_id):
 def get_posts(den_id, search):
     if search == '':
         posts = get_db().execute('''
-        select users.username, posts.created, posts.title, posts.id
-        from posts, users
-        where posts.author_id = users.id 
-        and den_id = ?
-        order by posts.created DESC
+        select users.username, posts.created, posts.title, posts.id, ifNull(post.likes,0) as likes
+        from users, posts left join 
+            (
+            select post_id, count(*) as likes
+            from post_like_assoc, posts
+            where posts.id = post_like_assoc.post_id
+            and posts.den_id = ?
+            group by post_like_assoc.post_id
+            ) as post on post_id = posts.id
+        where posts.den_id = ?
+        and posts.author_id = users.id
+        order by likes desc;
         ''',
-        (den_id,)).fetchall()
+        (den_id,den_id,)).fetchall()
     else:
         posts = get_db().execute('''
-        select users.username, posts.created, posts.title, posts.id
-        from posts, users
-        where posts.author_id = users.id 
-        and den_id = {}
+        select users.username, posts.created, posts.title, posts.id, ifNull(post.likes,0) as likes
+        from users, posts left join 
+            (
+            select post_id, count(*) as likes
+            from post_like_assoc, posts
+            where posts.id = post_like_assoc.post_id
+            and posts.den_id = {}
+            group by post_like_assoc.post_id
+            ) as post on post_id = posts.id
+        where posts.den_id = {}
+        and posts.author_id = users.id
         and posts.title like '%{}%'
-        order by posts.created DESC
-        '''.format(den_id, search)).fetchall()
+        order by likes desc;
+        '''.format(den_id, den_id, search)).fetchall()
     # print('user is looking for {}'.format(search))
     return posts
 
