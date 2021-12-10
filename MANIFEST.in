@@ -1,0 +1,4 @@
+include bobchat/schema.sql
+graft bobchat/static
+graft bobchat/templates
+global-exclude *.pyc

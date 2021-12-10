@@ -13,27 +13,43 @@ To run this code:
    cd bobchat
    ```
 
-2. **OPTIONAL**: Create and activate a virtual environment::
+2. Create and activate a virtual environment::
 
    ```
-   virtualenv env
-   source env/bin/activate
+   python3 -m venv venv
+   . venv/bin/activate
    ```
 
-3. Install Python requirements::
+3. Install Bobchat::
 
    ```
-   pip install -r 'requirements.txt'
+   pip install -e .
    ```
 
 4. Run the application::
 
-   ```
-   export FLASK_APP=bobchat
-   export FLASK_ENV=development
-   flask init-db
-   flask run
-   ```
+   1. Provide the "FLASK_APP" and "FLASK_ENV" environment variables:
+
+      ```
+      export FLASK_APP=bobchat
+      export FLASK_ENV=development
+      ```
+
+   2. Initialize the database:
+
+      ```
+      flask init-db
+      ```
+
+   3. Run the application:
+
+      ```
+      flask run
+      ```
+
+5. View the Application::
+
+   Navigate to `localhost:5000` or `127.0.0.1:5000` in a browser.
 
 ## 📚 Requirements
 
@@ -52,6 +68,6 @@ This project was made to satisfy the final project requirements in the [CSE 106]
 
 Want to make an application like this? Here's some useful resources:
 
+- This [tutorial](https://flask.palletsprojects.com/en/2.0.x/tutorial/) from the Flask official documentation was a great starting point for our project and for learning how to use Flask.
 - Knowing what [Patterns for Flask](https://flask.palletsprojects.com/en/2.0.x/patterns/) are available is useful figuring out how you want to use Flask and organize your project before you begin...
 - The [sqlite3](https://docs.python.org/3/library/sqlite3.html) API documentation was immensely helpful for figuring out exactly how to create, use and manage a database using Python's built-in sqlite3 package.
-- This [tutorial](https://flask.palletsprojects.com/en/2.0.x/tutorial/) from the Flask official documentation was a great starting point for our project and for learning how to use Flask.
