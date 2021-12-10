@@ -1,3 +1,8 @@
+#
+#   index.py
+#       Handles rendering the main index page, whether the user is logged in or not.
+#
+
 # Define the blueprint and register it in the application factory.
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for, session
