@@ -5,7 +5,6 @@ import os
 
 from flask import Flask
 
-
 # TODO:: Implement Flask-Bootstrap to handle our webpage styling.
 #           See: https://github.com/mbr/flask-bootstrap/blob/master/sample_app/__init__.py
 #           also: https://www.youtube.com/watch?v=4nzI4RKwb5I
@@ -44,8 +43,11 @@ def create_app(test_config=None):
         # Load the instance config, if it exists, when not testing.
         # Overrides the default configuration with values taken from the config.py
         # file in the instance folder if it exists.
-        # For example, when deploying, this can be used to set a real SECRET_KEY.
-        app.config.from_pyfile('config.py', silent=True)
+        # When deploying, this is used to set a real SECRET_KEY.
+        try:
+            app.config.from_pyfile('config.py', silent=False)
+        except FileNotFoundError as e:
+            print(e)
     else:
         # Load the test config if passed in.
         # This is so the tests can be configured independently of any
