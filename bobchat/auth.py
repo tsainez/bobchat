@@ -1,3 +1,10 @@
+#
+#   auth.py
+#       A blueprint that handles all pages dealing with user authentication, as well as
+#       provides a few helper functions and a decorator function that are used in
+#       other blueprints where verifying users is important.
+#
+
 # A Blueprint is a way to organize a group of related views and other code.
 # Rather than registering views and other code directly with an application,
 # they are registered with a blueprint. Then the blueprint is registered with
@@ -40,6 +47,7 @@ def register():
         lastname = request.form['lastname']
         email = request.form['email']
         major = request.form['major']
+
         db = get_db()
         error = None
 
@@ -59,7 +67,8 @@ def register():
                 # to a SQL injection attack.
                 db.execute(
                     "INSERT INTO users (username, password, firstname, lastname, email, major) VALUES (?, ?, ?, ?, ?, ?)",
-                    (username, generate_password_hash(password), firstname, lastname, email, major),
+                    (username, generate_password_hash(password),
+                     firstname, lastname, email, major),
                 )
                 # For security, passwords should never be stored in the database directly.
                 # Instead, generate_password_hash() is used to securely hash the password,
@@ -118,6 +127,7 @@ def login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
+
             # Now that the user’s id is stored in the session, it will be available on subsequent requests.
             return redirect(url_for('index'))
 
