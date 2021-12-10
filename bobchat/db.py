@@ -1,13 +1,17 @@
+#
+#   db.py
+#       Handles verifying database integrity as well as provides useful helper functions
+#       that are used in the blueprints for our front-end rendering.
+#
+
 import sqlite3
 from sqlite3 import Error
-from typing import Type
 
 import click
 from flask import current_app, g
 from flask.cli import with_appcontext
 
 import pandas as pd
-import os
 
 from werkzeug.security import generate_password_hash
 
@@ -75,10 +79,10 @@ def init_db():
             return -1
 
     # Attempt to populate all the tables with default data.
-    # os.listdir('bobchat/csv')
-    for file_name in ['users.csv','dens.csv','posts.csv','comments.csv','post_like_assoc.csv','user_den_assoc.csv']:
+    # We have to load in the CSVs in a specific order, else foreign key constraints will fail.
+    # See: https://github.com/tsainez/bobchat/issues/5
+    for file_name in ['users.csv', 'dens.csv', 'posts.csv', 'comments.csv', 'post_like_assoc.csv', 'user_den_assoc.csv']:
         table_name = file_name[:-4]  # Removing '.csv' from the file_name
-
         if pd.io.sql.has_table(table_name, db):
             try:
                 df = pd.read_csv(
@@ -92,7 +96,8 @@ def init_db():
             print(
                 "\tWARNING: table {} does not exist in the schema.\n".format(table_name))
 
-    # For the users table specifically, we need to salt and hash their passwords.
+    # For the users table specifically, we need to salt and hash their passwords
+    # after we've populated the table, for security purposes...
     if pd.io.sql.has_table('users', db):
         print("\tSalting and hashing passwords...\n")
         users_df = pd.read_csv(
@@ -127,17 +132,6 @@ def init_db_command():
         click.echo('Database initialized.')
 
 
-# Defines a command line command called test-sql, used for testing purposes.
-@click.command('test-sql')
-@with_appcontext
-def test_sql_command():
-    """Quick and dirty testing SQL statements on the database."""
-    db = get_db()
-    cur = db.cursor()
-    cur.execute('''SELECT * FROM users''')
-    print(cur.fetchall())
-
-
 # The close_db and init_db_command functions need to be registered with the application instance.
 # Otherwise, they won’t be used by the application. However, since we're using a factory function,
 # that instance isn’t available when writing the functions. Instead, write a function that takes
@@ -148,4 +142,3 @@ def init_app(app):
 
     # Add commands that can be called with the flask command.
     app.cli.add_command(init_db_command)
-    app.cli.add_command(test_sql_command)
