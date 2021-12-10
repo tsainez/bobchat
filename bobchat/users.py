@@ -1,10 +1,14 @@
+#
+#   users.py
+#       Handles the rendering for all user-page related content.
+#
+
 # Define the blueprint and register it in the application factory.
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
 from werkzeug.exceptions import abort
 
-from bobchat.auth import login_required
 from bobchat.db import get_db
 
 bp = Blueprint('users', __name__, url_prefix='/users')
@@ -27,4 +31,4 @@ def index():
     ORDER BY created DESC
     LIMIT 10;
     ''').fetchall()
-    return render_template('den/index.html', posts=posts)
+    return render_template('dens/index.html', posts=posts)
