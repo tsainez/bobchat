@@ -48,7 +48,6 @@ def create_app(test_config=None):
         # Load the instance config, if it exists, when not testing.
         # Overrides the default configuration with values taken from the config.py
         # file in the instance folder if it exists.
-        # When deploying, this is used to set a real SECRET_KEY.
         app.config.from_pyfile('config.py', silent=True)
     else:
         # Load the test config if passed in.
