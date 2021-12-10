@@ -49,6 +49,8 @@ To run this code:
       flask run
       ```
 
+      Do **not** use `flask run` in production.
+
 5. View the Application::
 
    Navigate to `localhost:5000` or `127.0.0.1:5000` in a browser.
