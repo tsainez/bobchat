@@ -31,7 +31,8 @@ def create_app(test_config=None):
     # It’s set to 'dev' to provide a convenient value during development,
     # but it should be overridden with a random value when deploying.
     # So, we try to get the SECRET_KEY from Heroku's environment variables.
-    if (SECRET_KEY := os.getenv('FLASK_SECRET_KEY')) is None:
+    SECRET_KEY = os.getenv('FLASK_SECRET_KEY')
+    if SECRET_KEY is None:
         SECRET_KEY = 'dev'
 
     # Here we add our configurations to the Flask app.
