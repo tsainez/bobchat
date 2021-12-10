@@ -1,12 +1,11 @@
-pragma foreign_keys = on;
+pragma foreign_keys = ON;
 DROP TABLE IF EXISTS user_den_assoc;
-drop table if exists comments;
+DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS posts;
-drop table if exists post_like_assoc;
+DROP TABLE IF EXISTS post_like_assoc;
 DROP TABLE IF EXISTS dens;
-drop table if exists users;
-
-CREATE TABLE if not exists users (
+DROP TABLE IF EXISTS users;
+CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
     PASSWORD TEXT NOT NULL,
@@ -16,8 +15,7 @@ CREATE TABLE if not exists users (
     email TEXT NOT NULL,
     major TEXT NOT NULL
 );
-
-CREATE TABLE if not exists dens(
+CREATE TABLE IF NOT EXISTS dens(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     author_id INTEGER NOT NULL DEFAULT 1,
@@ -25,39 +23,37 @@ CREATE TABLE if not exists dens(
     description TEXT NOT NULL,
     FOREIGN KEY (author_id) REFERENCES users(id)
 );
-CREATE TABLE if not exists posts (
+CREATE TABLE IF NOT EXISTS posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     author_id INTEGER NOT NULL,
     den_id INTEGER NOT NULL,
     created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     title TEXT NOT NULL,
     body TEXT NOT NULL,
-    FOREIGN KEY (author_id) REFERENCES users(id) on delete cascade,
-    FOREIGN KEY (den_id) REFERENCES dens(id) on delete cascade
+    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (den_id) REFERENCES dens(id) ON DELETE CASCADE
 );
-
-CREATE TABLE if not exists user_den_assoc(
+CREATE TABLE IF NOT EXISTS user_den_assoc(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     den_id INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) on delete cascade,
-    FOREIGN KEY (den_id) REFERENCES dens(id) on delete cascade
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (den_id) REFERENCES dens(id) ON DELETE CASCADE
 );
-CREATE TABLE if not exists post_like_assoc(
+CREATE TABLE IF NOT EXISTS post_like_assoc(
     id integer PRIMARY KEY autoincrement,
     user_id integer NOT NULL,
     post_id integer NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) on delete cascade,
-    FOREIGN KEY (post_id) REFERENCES posts(id) on delete cascade,
-    unique(user_id, post_id)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+    UNIQUE(user_id, post_id)
 );
-create table if not exists comments(
-    id integer primary key autoincrement,
-    author_id integer not null,
-    post_id integer not null,
-    body text not null,
+CREATE TABLE IF NOT EXISTS comments(
+    id integer PRIMARY KEY autoincrement,
+    author_id integer NOT NULL,
+    post_id integer NOT NULL,
+    body text NOT NULL,
     created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    foreign key (post_id) references posts(id) on delete cascade,
-    foreign key (author_id) references users(id)on delete cascade
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
