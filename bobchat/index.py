@@ -14,7 +14,6 @@ from bobchat.db import get_db
 
 bp = Blueprint('index', __name__)
 
-
 # This is the index or home page for the website.
 # If they aren't logged in, they will be shown a homepage, otherwise show their feed
 # A JOIN is used so that the author information from the user table is available in the result.

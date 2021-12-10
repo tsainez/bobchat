@@ -28,12 +28,8 @@ setup(
     zip_safe=False,
     install_requires=[
         'flask',
-        'Jinja2',
-        'itsdangerous',
-        'click',
-        'Werkzeug',
-        'MarkupSafe',
-        'python-dotenv',
+        'pandas',
+        'gunicorn',
     ],
 )
 

@@ -1,0 +1,1 @@
+web: gunicorn "bobchat:create_app()"

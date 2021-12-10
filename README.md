@@ -26,24 +26,26 @@ To run this code:
    pip install -e .
    ```
 
+   This installs Bobchat as a Python package as well as all the dependencies needed.
+
 4. Run the application::
 
-   1. Provide the "FLASK_APP" and "FLASK_ENV" environment variables:
-
-      ```
-      export FLASK_APP=bobchat
-      export FLASK_ENV=development
-      ```
-
-   2. Initialize the database:
+   1. Initialize the database:
 
       ```
       flask init-db
       ```
 
-   3. Run the application:
+   2. Run the application:
 
       ```
+      gunicorn "bobchat:create_app()"
+      ```
+
+      Alternatively, to run in development mode using the Werkzeug WSGI:
+
+      ```
+      export FLASK_ENV=development
       flask run
       ```
 
