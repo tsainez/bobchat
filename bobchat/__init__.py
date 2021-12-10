@@ -27,11 +27,16 @@ def create_app(test_config=None):
     # secrets and the database file.
     # See: https://flask.palletsprojects.com/en/2.0.x/config/#instance-folders
 
+    # SECRET_KEY is used by Flask and extensions to keep data safe.
+    # It’s set to 'dev' to provide a convenient value during development,
+    # but it should be overridden with a random value when deploying.
+    # So, we try to get the SECRET_KEY from Heroku's environment variables.
+    if (SECRET_KEY := os.getenv('FLASK_SECRET_KEY')) is None:
+        SECRET_KEY = 'dev'
+
+    # Here we add our configurations to the Flask app.
     app.config.from_mapping(
-        # SECRET_KEY is used by Flask and extensions to keep data safe.
-        # It’s set to 'dev' to provide a convenient value during development,
-        # but it should be overridden with a random value when deploying.
-        SECRET_KEY='dev',
+        SECRET_KEY=SECRET_KEY,
 
         # DATABASE is the path where the SQLite database file will be saved.
         # It’s under app.instance_path, which is the path that Flask has chosen
@@ -77,5 +82,7 @@ def create_app(test_config=None):
     from . import index
     app.register_blueprint(index.bp)
     app.add_url_rule('/', endpoint='index')
+
+    print(" * Using SECRET_KEY: " + app.config['SECRET_KEY'])
 
     return app
