@@ -22,7 +22,7 @@
     <div>
       <a href="{{ url_for('dens.den', den_id = den['id'] ) }}"><h1>{{ den['name'] }}</h1></a>
       <div class="about">
-        Den created by {{ den['username'] }} on {{ den['created'] }}
+        Den created by <a href = "{{ url_for('users.user_page', username = den['username']) }}">{{ den['username'] }}</a> on {{ den['created'] }}
       </div>
     </div>
     <div>

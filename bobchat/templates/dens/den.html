@@ -29,7 +29,7 @@
     <div>
       <a href="{{ url_for('dens.den_post', den_id = den['id'], post_id = post['id']) }}"><h1>{{ post['title'] }}</h1></a>
       <div class="about">
-        Posted created by {{ post['username'] }} on {{ post['created'] }}
+        Posted created by <a href = "{{ url_for('users.user_page', username = post['username']) }}">{{ post['username'] }}</a> on {{ post['created'] }}
       </div>
       <div>
         likes: {{ post['likes'] }}

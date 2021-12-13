@@ -35,7 +35,7 @@
           <div>
             <a href=" {{ url_for('dens.den_post', den_id = post['den_id'], post_id = post['post_id']) }}"><h1>{{ post['title'] }}</h1></a>
             <div class="about">
-              Posted by {{ post['username'] }} in <a href=" {{ url_for('dens.den', den_id = post['den_id']) }} ">{{ post['name'] }}</a> on {{post['created'] }}
+              Posted by <a href="{{ url_for('users.user_page', username = post['username']) }}">{{ post['username'] }}</a> in <a href=" {{ url_for('dens.den', den_id = post['den_id']) }} ">{{ post['name'] }}</a> on {{post['created'] }}
             </div>
           </div>
         </header>

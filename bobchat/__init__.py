@@ -74,6 +74,8 @@ def create_app(test_config=None):
     # TODO:: Change the main index page to user, where you can view all the dens you're apart of.
     from . import dens
     from . import posts
+    from . import users
+    app.register_blueprint(users.bp)
     app.register_blueprint(posts.bp)
     app.register_blueprint(dens.bp)
     # Unlike the auth blueprint, the den blueprint does not have a url_prefix.

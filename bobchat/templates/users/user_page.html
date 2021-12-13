@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+
+
+{% block header %}
+<div class="about">
+  <h1>{% block title %}{{ user['username']}}{% endblock %}</h1>
+  <p>major: {{ user['major'] }}</p>
+  <p>email: {{user['email']}}</p>
+  <p>name: {{user['firstname']}} {{user['lastname']}}</p>
+</div>
+{% endblock %}
+
+{% block content %}
+{% for post in posts %}
+<article class="post">
+    <header>
+      <div>
+        <a href="{{ url_for('dens.den_post', den_id = post['den_id'], post_id = post['id']) }}"><h1>{{ post['title'] }}</h1></a>
+        <div class="about">
+          Posted created by {{ user['username'] }} on {{ post['created'] }} in <a href = "{{ url_for('dens.den', den_id = post['den_id']) }}">{{ post['den_name'] }}</a>
+        </div>
+        <div>
+          likes: {{ post['likes'] }}
+        </div>
+      </div>
+      {% if g.user['username'] == post['username'] %}
+      <div>
+        <a href="{{ url_for('posts.update', post_id = post['id']) }}">Update</a>
+      </div>
+      {% endif %}
+    </header>
+</article>
+{% if not loop.last %}
+<hr />
+{% endif %} 
+{% endfor %}
+{% endblock %}

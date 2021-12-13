@@ -211,8 +211,7 @@ def get_posts(den_id, search):
         WHERE posts.den_id = ?
             AND posts.author_id = users.id
         ORDER BY likes DESC;
-        ''',
-                                 (den_id, den_id,)).fetchall()
+        ''',(den_id, den_id,)).fetchall()
     else:
         posts = get_db().execute('''
         SELECT users.username,

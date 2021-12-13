@@ -23,7 +23,8 @@ def index():
 
     # Whether or not the user is logged in, we want to show the 5 most recently made posts...
     recent_posts = db.execute('''
-        SELECT users.username,
+        SELECT 
+        users.username,
         dens.name,
         dens.id as den_id,
         posts.id as post_id,
