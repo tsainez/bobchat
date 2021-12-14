@@ -6,6 +6,7 @@ html {
 body {
   max-width: 960px;
   word-wrap: break-word;
+  text-overflow: clip;
   margin: 0 auto;
   background: white;
 }
@@ -83,6 +84,7 @@ header .action {
 }
 .post .body {
   white-space: pre-line;
+  word-wrap: break-word;
 }
 .content:last-child {
   margin-bottom: 0;

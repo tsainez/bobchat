@@ -6,7 +6,7 @@
 </div>
 {% endblock %} 
 {% block content %} 
-<article class="post">
+<article class="body">
     <header>
       <div>
         <div>
@@ -15,8 +15,8 @@
         <div class="about">
           Posted created by <a href = "{{ url_for('users.user_page', username = post['username']) }}">{{ post['username'] }}</a> on {{ post['created'] }}
         </div>
-        <div>
-            <p>{{ post['body'] }}</p>
+        <div class = "body">
+            {{ post['body'] }}
         </div>
         <div>
           <p>likes: {{ likes }}</p>
@@ -47,7 +47,7 @@
   <p>{{ comment['created'] }}</p> 
   <p><a href = "{{ url_for('users.user_page', username = comment['username']) }}">{{ comment['username'] }}</a></p>
 </div>
-<div>
+<div class="body">
   {{ comment['body'] }}
 </div>
 <hr/>
