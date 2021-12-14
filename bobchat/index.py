@@ -77,9 +77,9 @@ def index():
         WHERE den_id IN (
                 SELECT den_id
                 FROM user_den_assoc
-                WHERE user_id = {}
+                WHERE user_id = ?
             )
             AND users.id = posts.author_id
             AND dens.id = den_id
-        ORDER BY posts.created DESC;'''.format(session.get('user_id'))).fetchall()
+        ORDER BY posts.created DESC;''',(session.get('user_id'),)).fetchall()
         return render_template('index/feed.html', posts=posts, recents=recent_posts)

@@ -24,8 +24,8 @@ def index():
             '''
             select *
             from users
-            where username like '%{}%';
-            '''.format(request.form['search'])
+            where username like ?;
+            ''',('%'+request.form['search']+'%',)
         ).fetchall()
     else:
         users = db.execute(
@@ -44,8 +44,8 @@ def user_page(username):
         '''
         select *
         from users
-        where username = '{}'
-        '''.format(username)
+        where username = ?
+        ''',(username,)
     ).fetchone()
     author_id = user['id']
     posts = db.execute(
@@ -64,9 +64,9 @@ def user_page(username):
                 WHERE posts.id = post_like_assoc.post_id
                 GROUP BY post_like_assoc.post_id
             ) AS post ON post_id = posts.id
-        WHERE posts.author_id = {}
+        WHERE posts.author_id = ?
         and posts.den_id = dens.id
         ORDER BY likes DESC;
-        '''.format(author_id)
+        ''',(author_id,)
     ).fetchall()
     return render_template('users/user_page.html', user = user, posts = posts)

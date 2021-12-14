@@ -28,9 +28,9 @@ def index():
             d.id
             FROM dens d
             JOIN users u ON d.author_id = u.id
-            where d.name like '%{}%'
+            where d.name like ?
             ORDER BY d.created DESC;
-        '''.format(request.form['search'])).fetchall()
+        ''',('%'+request.form['search']+'%',)).fetchall()
     else:
         results = db.execute('''
         SELECT name,
@@ -161,13 +161,14 @@ def delete(den_id):
 def den(den_id):
     search = ''
     if request.method == 'POST':
+        print(request.form['search'])
         search = request.form['search']
     follow = get_db().execute('''
         select *
         from user_den_assoc
-        where user_id = {}
-        and den_id = {}
-    '''.format(g.user['id'], den_id)).fetchone()
+        where user_id = ?
+        and den_id = ?
+    ''',(g.user['id'], den_id,)).fetchone()
     if follow is None:
         follow = 'follow'
     else:
@@ -233,14 +234,14 @@ def get_posts(den_id, search):
                 FROM post_like_assoc,
                     posts
                 WHERE posts.id = post_like_assoc.post_id
-                    AND posts.den_id = { }
+                    AND posts.den_id = ?
                 GROUP BY post_like_assoc.post_id
             ) AS post ON post_id = posts.id
-        WHERE posts.den_id = { }
+        WHERE posts.den_id = ?
             AND posts.author_id = users.id
-            AND posts.title LIKE '%{}%'
+            AND posts.title LIKE ?
         ORDER BY likes DESC;
-        '''.format(den_id, den_id, search)).fetchall()
+        ''',(den_id, den_id, '%'+search+'%',)).fetchall()
     return posts
 
 
