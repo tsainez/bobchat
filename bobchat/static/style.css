@@ -5,6 +5,7 @@ html {
 }
 body {
   max-width: 960px;
+  word-wrap: break-word;
   margin: 0 auto;
   background: white;
 }
