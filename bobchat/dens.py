@@ -3,9 +3,7 @@
 #       Handles the main use-cases for our program.
 #
 
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
-)
+from flask import ( Blueprint, flash, g, redirect, render_template, request, url_for )
 from werkzeug.exceptions import abort
 
 from bobchat.auth import login_required

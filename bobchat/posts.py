@@ -3,14 +3,11 @@
 #       Handles post-specific operations, such as adding and deleting comments...
 #
 
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
-)
+from flask import ( Blueprint, g, redirect, render_template, request, url_for )
 from werkzeug.exceptions import abort
 
 from bobchat.auth import login_required
 from bobchat.db import get_db
-from bobchat.dens import den_post
 
 #
 # TODO: It would be nice if we could nest this blueprint off of the dens blueprint.

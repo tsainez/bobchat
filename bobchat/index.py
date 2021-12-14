@@ -4,12 +4,8 @@
 #
 
 # Define the blueprint and register it in the application factory.
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for, session
-)
-from werkzeug.exceptions import abort
+from flask import ( Blueprint, g, render_template, session )
 
-from bobchat.auth import login_required
 from bobchat.db import get_db
 
 bp = Blueprint('index', __name__)
