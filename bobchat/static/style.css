@@ -110,7 +110,7 @@ header .action {
   resize: vertical;
 }
 input.danger {
-  color: #cc2f2e;
+  color: #f18a00;
 }
 input[type="submit"] {
   align-self: start;

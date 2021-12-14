@@ -85,6 +85,6 @@ def create_app(test_config=None):
     app.register_blueprint(index.bp)
     app.add_url_rule('/', endpoint='index')
 
-    print(" * Using SECRET_KEY: " + app.config['SECRET_KEY'])
+    # print(" * Using SECRET_KEY: " + app.config['SECRET_KEY'])
 
     return app
