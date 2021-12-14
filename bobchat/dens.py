@@ -113,6 +113,11 @@ def update(id):
     #
 
     den = get_den_info(id)
+    print(g.user['id'])
+    print(den['author_id'])
+    if (int(g.user['id']) != int(den['author_id'])):
+        print('error')
+        return abort(403)
 
     if request.method == 'POST':
         title = request.form['title']
@@ -179,7 +184,8 @@ def get_den_info(den_id):
         dens.created,
         dens.description,
         users.username,
-        dens.id
+        dens.id,
+        dens.author_id
     FROM dens,
         users
     WHERE users.id = dens.author_id

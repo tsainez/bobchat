@@ -24,7 +24,7 @@
           likes: {{ post['likes'] }}
         </div>
       </div>
-      {% if g.user['username'] == post['username'] %}
+      {% if g.user['username'] == post['username'] and g.user%}
       <div>
         <a href="{{ url_for('posts.update', post_id = post['id']) }}">Update</a>
       </div>
