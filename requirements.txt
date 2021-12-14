@@ -1,0 +1,15 @@
+click
+Flask
+gunicorn
+importlib-metadata
+itsdangerous
+Jinja2
+MarkupSafe
+numpy
+pandas
+python-dateutil
+pytz
+six
+typing-extensions
+Werkzeug
+zipp

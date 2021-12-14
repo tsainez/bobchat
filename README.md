@@ -38,11 +38,13 @@ To run this code:
 
    2. Run the application:
 
+      In production, run using [Gunicorn](https://gunicorn.org):
+
       ```
       gunicorn "bobchat:create_app()"
       ```
 
-      Alternatively, to run in development mode using the Werkzeug WSGI:
+      Alternatively, to run in development mode using Werkzeug:
 
       ```
       export FLASK_ENV=development

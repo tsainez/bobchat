@@ -1,1 +1,1 @@
-web: python3 -m venv venv; . venv/bin/activate; pip install -e .; gunicorn "bobchat:create_app()"
+web: pip install -e .; flask init-db; gunicorn "bobchat:create_app()"

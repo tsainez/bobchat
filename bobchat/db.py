@@ -15,6 +15,8 @@ import pandas as pd
 
 from werkzeug.security import generate_password_hash
 
+import time
+
 # g is a special object that is unique for each request.
 # It is used to store data that might be accessed by multiple
 # functions during the request. The connection is stored and
@@ -100,6 +102,7 @@ def init_db():
     # after we've populated the table, for security purposes...
     if pd.io.sql.has_table('users', db):
         print("\tSalting and hashing passwords...\n")
+        start_time = time.time()
         users_df = pd.read_csv(
             'bobchat/csv/users.csv', index_col=0)
         i = 1
@@ -117,7 +120,8 @@ def init_db():
                 i += 1
             except Error as e:
                 print(e)
-        print('\n')
+        lap = time.time() - start_time
+        print("\n\n\tFinished. Time elapsed: %d m %.2f s\n" % (int(lap / 60) , lap - (int(lap / 60) * 60)))
 
 
 # Defines a command line command called init-db that calls the init_db function and shows a success message to the user
