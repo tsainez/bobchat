@@ -16,6 +16,7 @@ def create_app(test_config=None):
     # http://flask.pocoo.org/docs/patterns/appfactories/
 
     app = Flask(__name__, instance_relative_config=True)
+    app.url_map.strict_slashes = False
     # __name__ is the name of the current Python module.
     # The app needs to know where it’s located to set up some paths,
     # and __name__ is a convenient way to tell it that.
