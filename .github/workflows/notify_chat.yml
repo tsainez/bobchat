@@ -1,0 +1,48 @@
+name: Notify Bobchat on Push
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Send notification to Bobchat
+        env:
+          BOBCHAT_URL: ${{ secrets.BOBCHAT_URL }} # e.g. https://my-bobchat-app.herokuapp.com
+          BOBCHAT_TOKEN: ${{ secrets.BOBCHAT_TOKEN }} # The secret token
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
+          COMMIT_AUTHOR: ${{ github.event.head_commit.author.name }}
+          COMMIT_URL: ${{ github.event.head_commit.url }}
+        run: |
+          # If BOBCHAT_URL is not set, we skip (or you can fail)
+          if [ -z "$BOBCHAT_URL" ]; then
+            echo "BOBCHAT_URL is not set. Skipping notification."
+            exit 0
+          fi
+
+          # Use Python to safely construct the JSON payload from environment variables
+          # This handles escaping quotes and newlines correctly, and avoids bash quoting issues
+          PAYLOAD=$(python3 -c "
+          import json, os
+
+          author = os.environ.get('COMMIT_AUTHOR', 'Unknown')
+          msg = os.environ.get('COMMIT_MSG', '')
+          url = os.environ.get('COMMIT_URL', '')
+
+          title = f'New Commit by {author}'
+          body = f'Commit Message: {msg}\nLink: {url}'
+
+          print(json.dumps({'title': title, 'body': body, 'den_id': 1}))
+          ")
+
+          curl -X POST "$BOBCHAT_URL/integrations/github/webhook" \
+            -H "Content-Type: application/json" \
+            -H "X-Auth-Token: $BOBCHAT_TOKEN" \
+            -d "$PAYLOAD"
