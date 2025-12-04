@@ -82,6 +82,9 @@ def create_app(test_config=None):
     # Unlike the auth blueprint, the den blueprint does not have a url_prefix.
     # So the index view will be at /, the create view at /create, and so on.
 
+    from . import integrations
+    app.register_blueprint(integrations.bp)
+
     from . import index
     app.register_blueprint(index.bp)
     app.add_url_rule('/', endpoint='index')
