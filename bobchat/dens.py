@@ -5,6 +5,7 @@
 
 from flask import ( Blueprint, flash, g, redirect, render_template, request, url_for )
 from werkzeug.exceptions import abort
+import sqlite3
 
 from bobchat.auth import login_required
 from bobchat.db import get_db
@@ -256,7 +257,7 @@ def den_post(den_id, post_id):
             ''', (g.user['id'], post_id,)
             )
             db.commit()
-        except get_db().IntegrityError:
+        except sqlite3.IntegrityError:
             # This user already liked the post, so the database will throw an IntegrityError
             # since there is a uniqueness constraint attached to the post_like_assoc table.
             db.execute('''
@@ -269,7 +270,7 @@ def den_post(den_id, post_id):
 
     den_info = get_den_info(den_id)
     post_info = get_post(post_id)
-    likes = get_likes(post_id)
+    likes = get_likes(post_id, 'post')
     comments = get_comments(post_id)
 
     return render_template('dens/post.html', den=den_info, post=post_info, likes=likes, comments=comments)
@@ -291,15 +292,22 @@ def get_post(post_id):
     return post
 
 
-# Returns the number of likes by post_id...
-def get_likes(post_id):
-    # TODO: handle getting likes for comments as well, see: https://github.com/tsainez/bobchat/issues/8
-    likes = get_db().execute('''
-        SELECT COUNT(*) AS COUNT
-        FROM post_like_assoc
-        WHERE post_id = ?;
-        ''', (post_id,)).fetchone()
-    return likes['count']
+# Returns the number of likes by post_id or comment_id
+def get_likes(id, type='post'):
+    if type == 'post':
+        likes = get_db().execute('''
+            SELECT COUNT(*) AS COUNT
+            FROM post_like_assoc
+            WHERE post_id = ?;
+            ''', (id,)).fetchone()
+        return likes['count']
+    elif type == 'comment':
+        likes = get_db().execute('''
+            SELECT COUNT(*) AS COUNT
+            FROM comment_like_assoc
+            WHERE comment_id = ?;
+            ''', (id,)).fetchone()
+        return likes['count']
 
 
 # Return a list of comments attached to a post
@@ -308,11 +316,16 @@ def get_comments(post_id):
         SELECT users.username,
             comments.body,
             comments.created,
-            comments.id
-        FROM comments,
-            users
-        WHERE comments.author_id = users.id
-            AND comments.post_id = ?
+            comments.id,
+            IFNULL(cl.likes, 0) as likes
+        FROM comments
+        JOIN users ON comments.author_id = users.id
+        LEFT JOIN (
+            SELECT comment_id, COUNT(*) as likes
+            FROM comment_like_assoc
+            GROUP BY comment_id
+        ) AS cl ON comments.id = cl.comment_id
+        WHERE comments.post_id = ?
         ORDER BY comments.created DESC;
     ''', (post_id,)).fetchall()
     return comments
@@ -330,6 +343,32 @@ def comment(den_id, post_id):
     VALUES(?, ?, ?)
     ''', (g.user['id'], post_id, body))
     db.commit()
+
+    return redirect(url_for('dens.den_post', den_id=den_id, post_id=post_id))
+
+
+# Route for when a user wants to like a comment
+@bp.route('/<int:den_id>/<int:post_id>/<int:comment_id>/like', methods=['POST'])
+@login_required
+def like_comment(den_id, post_id, comment_id):
+    db = get_db()
+    try:
+        db.execute('''
+        INSERT INTO comment_like_assoc(user_id, comment_id)
+        VALUES(?, ?);
+        ''', (g.user['id'], comment_id,)
+        )
+        db.commit()
+    except sqlite3.IntegrityError:
+        # This user already liked the comment, so the database will throw an IntegrityError
+        # since there is a uniqueness constraint attached to the comment_like_assoc table.
+        db.execute('''
+            DELETE FROM comment_like_assoc
+            WHERE user_id = ?
+                AND comment_id = ?;
+        ''', (g.user['id'], comment_id,)
+        )
+        db.commit()
 
     return redirect(url_for('dens.den_post', den_id=den_id, post_id=post_id))
 

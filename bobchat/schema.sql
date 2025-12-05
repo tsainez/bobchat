@@ -1,5 +1,6 @@
 pragma foreign_keys = ON;
 DROP TABLE IF EXISTS user_den_assoc;
+DROP TABLE IF EXISTS comment_like_assoc;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS posts;
 DROP TABLE IF EXISTS post_like_assoc;
@@ -56,4 +57,12 @@ CREATE TABLE IF NOT EXISTS comments(
     created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS comment_like_assoc(
+    id integer PRIMARY KEY autoincrement,
+    user_id integer NOT NULL,
+    comment_id integer NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE,
+    UNIQUE(user_id, comment_id)
 );
