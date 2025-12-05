@@ -50,6 +50,12 @@
 <div class="body">
   {{ comment['body'] }}
 </div>
+<div>
+  <p>likes: {{ comment['likes'] }}</p>
+  <form method="POST" action="{{ url_for('dens.like_comment', den_id = den['id'], post_id = post['id'], comment_id = comment['id']) }}">
+    <input type="submit" value="Like">
+  </form>
+</div>
 <hr/>
 {% endfor %}
 {% endblock %}
