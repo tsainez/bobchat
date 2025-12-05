@@ -4,6 +4,7 @@
 import os
 
 from flask import Flask
+from flask_bootstrap import Bootstrap5
 
 # TODO:: Implement Flask-Bootstrap to handle our webpage styling.
 #           See: https://github.com/mbr/flask-bootstrap/blob/master/sample_app/__init__.py
@@ -90,5 +91,7 @@ def create_app(test_config=None):
     app.add_url_rule('/', endpoint='index')
 
     # print(" * Using SECRET_KEY: " + app.config['SECRET_KEY'])
+
+    Bootstrap5(app)
 
     return app

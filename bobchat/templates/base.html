@@ -1,28 +1,68 @@
-<!DOCTYPE html>
-<title>{% block title %}{% endblock %} - Bobchat</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-<link
-  rel="shortcut icon"
-  type="image/jpg"
-  href="{{ url_for('static', filename='favicon-16x16.png') }}"
-/>
-<nav>
-  <h1><a href="/">Bobchat 🧶</a></h1>
-  <ul>
-    {% if g.user %}
-    <li><span>{{ g.user['username'] }}</span></li>
-    {% block navList %} {% endblock %}
-    <li><a href="{{ url_for('auth.logout') }}">Log Out</a> {% else %}</li>
-    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-    <li>
-      <a href="{{ url_for('auth.login') }}">Log In</a>
-      {% endif %}
-    </li>
-  </ul>
-</nav>
-<section class="content">
-  <header>{% block header %}{% endblock %}</header>
-  {% for message in get_flashed_messages() %}
-  <div class="flash">{{ message }}</div>
-  {% endfor %} {% block content %} {% endblock %}
-</section>
+<!doctype html>
+<html lang="en">
+<head>
+    {% block head %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    {% block styles %}
+    <!-- Bootstrap CSS -->
+    {{ bootstrap.load_css() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="shortcut icon" type="image/jpg" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+    {% endblock %}
+
+    <title>{% block title %}{% endblock %} - Bobchat</title>
+    {% endblock %}
+</head>
+<body>
+    {% block navbar %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+      <div class="container">
+        <a class="navbar-brand" href="/">Bobchat 🧶</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+             <!-- Left side nav items if any -->
+          </ul>
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            {% if g.user %}
+            <li class="nav-item">
+              <span class="nav-link disabled">{{ g.user['username'] }}</span>
+            </li>
+            {# The original base.html had block navList inside the UL.
+               We need to support that. #}
+            {% block navList %} {% endblock %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('auth.logout') }}">Log Out</a>
+            </li>
+            {% else %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">Register</a></li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('auth.login') }}">Log In</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+    {% endblock %}
+
+    <main class="content container">
+      <header>{% block header %}{% endblock %}</header>
+      {% for message in get_flashed_messages() %}
+      <div class="alert alert-info" role="alert">{{ message }}</div>
+      {% endfor %}
+
+      {% block content %} {% endblock %}
+    </main>
+
+    {% block scripts %}
+    <!-- Optional JavaScript -->
+    {{ bootstrap.load_js() }}
+    {% endblock %}
+</body>
+</html>

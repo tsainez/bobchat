@@ -1,19 +1,39 @@
-{% extends 'base.html' %} {% block header %}
+{% extends 'base.html' %}
+
+{% block header %}
 <h1>{% block title %}Register{% endblock %}</h1>
-{% endblock %} {% block content %}
-<form method="post">
-  <label for="username">Username</label>
-  <input name="username" id="username" required />
-  <label for="password">Password</label>
-  <input type="password" name="password" id="password" required />
-  <label for="firstname">Firstname</label>
-  <input name="firstname" id ="firstname" required />
-  <label for="lastname">Lastname</label>
-  <input name="lastname" id="lastname" required/>
-  <label for="email">Email</label>
-  <input name = "email" id = "email" required/>
-  <label for="major">Major</label>
-  <input name = "major" id = "major" required/>
-  <input type="submit" value="Register" />
-</form>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-6 offset-md-3">
+    <form method="post">
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input name="username" id="username" class="form-control" required />
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" name="password" id="password" class="form-control" required />
+      </div>
+      <div class="mb-3">
+        <label for="firstname" class="form-label">Firstname</label>
+        <input name="firstname" id="firstname" class="form-control" required />
+      </div>
+      <div class="mb-3">
+        <label for="lastname" class="form-label">Lastname</label>
+        <input name="lastname" id="lastname" class="form-control" required />
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" name="email" id="email" class="form-control" required/>
+      </div>
+      <div class="mb-3">
+        <label for="major" class="form-label">Major</label>
+        <input name="major" id="major" class="form-control" required/>
+      </div>
+      <input type="submit" class="btn btn-primary" value="Register" />
+    </form>
+  </div>
+</div>
 {% endblock %}

@@ -13,3 +13,4 @@ six
 typing-extensions
 Werkzeug
 zipp
+bootstrap-flask
